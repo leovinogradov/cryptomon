@@ -4,7 +4,7 @@ using eosio::contract;
 
 //class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract{
   //public:
-    cryptomon::cryptomon(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds): contract(receiver, code, ds), mons_table(receiver, code.value), player_table(receiver, code.value), market_table(receiver, code.value), trade_table(receiver, code.value)
+    cryptomon::cryptomon(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds): contract(receiver, code, ds), mons_table(receiver, code.value), player_table(receiver, code.value), market_table(receiver, code.value), transact_table(receiver, code.value)
     {}
     //applying an item to specified cryptomon for wanted effects
     [[eosio::action]]
@@ -93,17 +93,17 @@ using eosio::contract;
     void cryptomon::deleteplayer(eosio::name acc){
       //require_auth(acc);
       auto player_iterator = player_table.find(acc.value);
-      auto marketplace_iterator = market_table.find(acc.value);
       eosio::check(player_iterator != player_table.end(), "Player does not exist");
 
       auto c_index = player_table.get(acc.value).cryptomon_index; //delete player
+      auto transact_iterator = transact_table.find(acc.value);
       player_table.erase(player_iterator);
 
       auto cryptomons_iterator = mons_table.find(c_index); //find cryptomon associated with player
       mons_table.erase(cryptomons_iterator);
 
-      if(marketplace_iterator != market_table.end()){ //if there is an entry in market, delete it
-        market_table.erase(marketplace_iterator);
+      if(transact_iterator != transact_table.end()){ //if there is an entry in market, delete it
+        transact_table.erase(transact_iterator);
       }
     }
 
@@ -130,27 +130,29 @@ using eosio::contract;
     void cryptomon::listmon(eosio::name acc, eosio::asset price, uint64_t delay){
       //require_auth(acc);
       auto player_iterator = player_table.find(acc.value);
-      auto market_iterator = market_table.find(acc.value);
+      auto trans_iterator = transact_table.find(acc.value);
       if(player_iterator == player_table.end()){
         eosio::print("No record exists of this player!");
       }
       else{
-        if(market_iterator == market_table.end()){
+        if(trans_iterator == transact_table.end()){
           //no entry in marketplace, create entry
           auto c_index = player_table.get(acc.value).cryptomon_index;
-          market_table.emplace(acc, [&](auto &row){
-            row.key = c_index;
-            row.seller = acc;
-            row.cost = price;
+          transact_table.emplace(acc, [&](auto &row){
+            row.cryptomon_index = c_index;
+            row.account_one = acc;
+            row.price = price;
+            row.swap = false;
+
           });
           eosio::transaction t{};
-          t.actions.emplace_back(eosio::permission_level{_self, "active"_n}, _self, "delistmon"_n, std::make_tuple(c_index));
+          t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "delistmon"_n, std::make_tuple(c_index));
           t.delay_sec = delay;
           t.send(acc.value, acc);
         }
         else{
-          market_table.modify(market_iterator, acc, [&](auto &row){
-            row.cost = price;
+            transact_table.modify(trans_iterator, acc, [&](auto &row){
+            row.price = price;
           });
         }
       }
@@ -160,9 +162,9 @@ using eosio::contract;
     void cryptomon::delistmon(uint64_t c_index){
       //require_auth(acc);
 
-      auto iterator = market_table.find(c_index);
-      eosio::check(iterator != market_table.end(), "Cryptomon listing does not exist!");
-      market_table.erase(iterator);
+      auto iterator = transact_table.find(c_index);
+      eosio::check(iterator != transact_table.end(), "Cryptomon listing does not exist!");
+      transact_table.erase(iterator);
     }
 
     [[eosio::action]]
@@ -170,41 +172,42 @@ using eosio::contract;
         //require_auth(buyer);
         auto buyer_iterator = player_table.find(acc.value);
         // auto market_iterator = market_table.find(c_index);
-        auto market_iterator = trade_table.find(c_index);
-        auto market_entry = trade_table.get(c_index);
-        eosio::name seller = market_entry.seller;
+        auto transact_iterator = transact_table.find(c_index);
+        auto transact_entry = transact_table.get(c_index);
+        eosio::name seller = transact_entry.account_one;
         auto seller_iterator = player_table.find(seller.value);
         auto buyer = player_table.get(acc.value);
-        eosio::asset to_pay = market_entry.cost;
-        //uint64_t cost = market_entry.askingPrice
+        if(acc == seller){
+          eosio::print("Cannot buy/sell with self");
+          return;
+        }
 
-        eosio::check(!market_entry.account_two, "This is a trade not a listing");
-        
+        eosio::check(transact_entry.account_two.value == 0, "This is a trade, not a listing");
         eosio::check(acc != seller, "Cannot perform action with self!");
-        eosio::check(market_iterator != market_table.end(), "No record exists from seller!");
+        eosio::check(transact_iterator != transact_table.end(), "No record exists in transact table!");
         eosio::check(buyer_iterator != player_table.end(), "No record exists for buyer");
-        //eosio::asset to_pay(cost, currency_symbol);
-        eosio::check(buyer.funds.amount > to_pay.amount, "Insufficient funds");
-        if(buyer.funds.amount > to_pay.amount && buyer_iterator != player_table.end()){
+        eosio::check(buyer.funds.amount > transact_entry.price.amount, "Insufficient funds");
+
+        if(buyer.funds.amount > transact_entry.price.amount && buyer_iterator != player_table.end()){
           player_table.modify(buyer_iterator, acc, [&](auto &row){
             row.cryptomon_index = c_index;
             row.has_cryptomon = true;
-            row.funds = row.funds - to_pay;
+            row.funds = row.funds - transact_entry.price;
           });
 
           player_table.modify(seller_iterator, seller, [&](auto &row){
             row.has_cryptomon = false;
             row.cryptomon_index = 0; //the index of seller must be changed to indicate no cryptomon
             if(row.funds.amount == 0){
-              row.funds = to_pay;
+              row.funds = transact_entry.price;
             }
             else{
-              row.funds += to_pay;
+              row.funds += transact_entry.price;
             }
           });
         }
-
         eosio::action(eosio::permission_level{acc, "active"_n}, get_self(), "delistmon"_n, std::make_tuple(c_index)).send();
+        eosio::cancel_deferred(seller.value);
         //eosio::action(eosio::permission_level{acc, "active"_n}, "eosio.token"_n, "transfer"_n, std::make_tuple(acc, seller, buyer_iterator->funds, std::string("Transferring funds!"))).send();
       }
 
@@ -233,9 +236,9 @@ using eosio::contract;
 
     [[eosio::action]]
     void cryptomon::canceltrade(uint64_t cryptomon_index){
-      auto trade_itr = trade_table.find(cryptomon_index);
-      if(trade_itr != trade_table.end()){
-        trade_table.erase(trade_itr);
+      auto trade_itr = transact_table.find(cryptomon_index);
+      if(trade_itr != transact_table.end()){
+        transact_table.erase(trade_itr);
       }
       else{
         eosio::print("No trade made with this cryptomon!");
@@ -254,18 +257,19 @@ using eosio::contract;
       else{
         auto entry_account_one = player_table.get(account_one.value);
         auto entry_account_two = player_table.get(account_two.value);
-        auto trade_itr = trade_table.find(entry_account_one.cryptomon_index);
+        auto trade_itr = transact_table.find(entry_account_one.cryptomon_index);
         if(!entry_account_two.has_cryptomon){
           eosio::print("Cannot initiate trade with player who has no cryptomon!");
           return;
         }
         if(entry_account_one.funds.amount >= price.amount){
-          if(trade_itr == trade_table.end()){
-              trade_table.emplace(account_one, [&](auto &entry){ // creating new trade
+          if(trade_itr == transact_table.end()){
+              transact_table.emplace(account_one, [&](auto &entry){ // creating new trade
                 entry.account_one = account_one;
                 entry.account_two = account_two;
                 if(swap){
                   if(entry_account_one.has_cryptomon){
+                    entry.swap = true;
                     entry.cryptomon_index = entry_account_one.cryptomon_index;
                   }
                   else{
@@ -277,7 +281,6 @@ using eosio::contract;
                   entry.cryptomon_index = 0;
                 }
                 entry.price = price;
-                entry.sold = false;
               });
               eosio::transaction t{}; //delete trade after duration period
               t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
@@ -286,34 +289,45 @@ using eosio::contract;
             }
           else{
             eosio::cancel_deferred(account_one.value);
-            trade_table.modify(trade_itr, account_one, [&](auto &row){
+            transact_table.modify(trade_itr, account_one, [&](auto &row){
               row.account_two = account_two;
               row.price = price;
+              if(swap){
+                if(entry_account_one.has_cryptomon){
+                  row.swap = true;
+                  row.cryptomon_index = entry_account_one.cryptomon_index;
+                }
+                else{
+                  eosio::print("Do not have a cryptomon to swap!");
+                  return;
+                }
+              }
+              else{
+                row.cryptomon_index = 0;
+              }
             });
             eosio::transaction t{}; //delete trade after duration period
             t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
             t.delay_sec = duration;
             t.send(account_one.value, account_one);
-          }
-        }
-          else{
-            eosio::print(price.amount);
-            eosio::print(entry_account_one.funds.amount);
-            eosio::print("Lack adequate funds for offer amount!");
+              }
             }
+          else{
+            eosio::print("Lack adequate funds for offer amount!");
           }
         }
+      }
 
     [[eosio::action]]
     void cryptomon::accepttrade(eosio::name account, uint64_t cryptomon_index){
       //require_auth(account); // acct in this case is account of buyer
 
-      auto trade_itr = trade_table.find(cryptomon_index);
-      eosio::check(trade_itr != trade_table.end(), "No such trade exists");
+      auto trade_itr = transact_table.find(cryptomon_index);
+      eosio::check(trade_itr != transact_table.end(), "No such trade exists");
 
-      auto trade_instance = trade_table.get(cryptomon_index);
-      eosio::check((trade_instance.account_two || trade_instance.account_two != account), "This trade is not for you");
-      eosio::check(!trade_instance.sold, "This trade has already been completed"); //issue, if same cryptomon is to be traded again, .sold would be true
+      auto trade_instance = transact_table.get(cryptomon_index);
+      eosio::check((trade_instance.account_two.value != 0 && trade_instance.account_two == account), "This trade is not for you");
+      //eosio::check(!trade_instance.sold, "This trade has already been completed"); //issue, if same cryptomon is to be traded again, .sold would be true
 
       auto acceptor_iterator = player_table.find(account.value);
       auto initiator_iterator = player_table.find(trade_instance.account_one.value);
@@ -325,12 +339,8 @@ using eosio::contract;
       uint64_t c_index_acceptor = acceptor.cryptomon_index;
       uint64_t c_index_initiator = initiator.cryptomon_index;
 
-      //uint64_t cost = trade_instance.price;
-
-      //eosio::check(acceptor.funds.amount > trade_instance.price.amount, "Insufficient funds");
       eosio::check((c_index_initiator == trade_instance.cryptomon_index), "Invalid cryptomon index"); // should never happen but good to check anyway
-
-      // Swap cryptomons
+      eosio::print(trade_instance.swap);
       if(acceptor_iterator != player_table.end()){
         player_table.modify(acceptor_iterator, account, [&](auto &row){
           if(row.funds.amount == 0){
@@ -351,12 +361,10 @@ using eosio::contract;
 
         player_table.modify(initiator_iterator, trade_instance.account_one, [&](auto &row){
             row.cryptomon_index = c_index_acceptor;
+            row.has_cryptomon = true;
             row.funds -= trade_instance.price;
         });
-
-        trade_table.modify(trade_itr, account, [&](auto &entry){
-          entry.sold = true;
-        });
+        transact_table.erase(trade_itr);
       }
     }
 

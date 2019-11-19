@@ -39,4 +39,4 @@ cleos push action cryptomon createmon '{"acc": "alice"}' -p alice@active
 sleep 2
 cleos transfer alice cryptomon "25.0000 EOS" "Transfer!" -p alice@active
 sleep 2
-cleos push action cryptomon inittrade '{"account_one": "alice", "account_two": "bob", "price": "10.0000 EOS", "swap": "1", "duration": "10000"}' -p alice@active
+cleos push action cryptomon inittrade '{"account_one": "alice", "account_two": "bob", "price": "10.0000 EOS", "swap": true, "duration": "10000"}' -p alice@active

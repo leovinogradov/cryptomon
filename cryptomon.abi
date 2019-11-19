@@ -225,36 +225,6 @@
             "fields": []
         },
         {
-            "name": "pentrade",
-            "base": "",
-            "fields": [
-                {
-                    "name": "account_one",
-                    "type": "name"
-                },
-                {
-                    "name": "account_two",
-                    "type": "name"
-                },
-                {
-                    "name": "cryptomon_index",
-                    "type": "uint64"
-                },
-                {
-                    "name": "swap",
-                    "type": "bool"
-                },
-                {
-                    "name": "price",
-                    "type": "asset"
-                },
-                {
-                    "name": "sold",
-                    "type": "bool"
-                }
-            ]
-        },
-        {
             "name": "player",
             "base": "",
             "fields": [
@@ -323,6 +293,32 @@
                 {
                     "name": "account_two",
                     "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "transact",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account_one",
+                    "type": "name"
+                },
+                {
+                    "name": "account_two",
+                    "type": "name"
+                },
+                {
+                    "name": "cryptomon_index",
+                    "type": "uint64"
+                },
+                {
+                    "name": "swap",
+                    "type": "bool"
+                },
+                {
+                    "name": "price",
+                    "type": "asset"
                 }
             ]
         },
@@ -463,15 +459,15 @@
             "key_types": []
         },
         {
-            "name": "pentrades",
-            "type": "pentrade",
+            "name": "players",
+            "type": "player",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
         },
         {
-            "name": "players",
-            "type": "player",
+            "name": "transacts",
+            "type": "transact",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

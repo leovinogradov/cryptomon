@@ -120,13 +120,12 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
       //uint64_t by_playerId const();
     };
 
-    struct [[eosio::table]] pentrade {
+    struct [[eosio::table]] transact {
       eosio::name account_one;
       eosio::name account_two;
       uint64_t cryptomon_index;
       bool swap;
       eosio::asset price;
-      bool sold;
       uint64_t primary_key() const { return cryptomon_index; }
     };
 
@@ -181,12 +180,12 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     typedef eosio::multi_index<"players"_n, player> p_data;
     typedef eosio::multi_index<"market"_n, marketplace> m_data;
     typedef eosio::multi_index<"cryptomons"_n, cryptomons> c_data;
-    typedef eosio::multi_index<"pentrades"_n, pentrade> t_data;
+    typedef eosio::multi_index<"transacts"_n, transact> t_data;
 
     c_data mons_table;
     p_data player_table;
     m_data market_table;
-    t_data trade_table;
+    t_data transact_table;
 
   private:
     const eosio::symbol currency_symbol = eosio::symbol("EOS", 4);

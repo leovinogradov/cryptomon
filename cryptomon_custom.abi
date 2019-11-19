@@ -324,7 +324,7 @@
       ]
     },
     {
-      "name": "pentrade",
+      "name": "transact",
       "base": "",
       "fields": [
         {
@@ -346,10 +346,6 @@
         {
           "name": "price",
           "type": "asset"
-        },
-        {
-          "name": "sold",
-          "type": "bool"
         }
       ]
     }
@@ -469,8 +465,8 @@
       "key_types": ["uint64"]
     },
     {
-      "name": "pentrades",
-      "type": "pentrade",
+      "name": "transacts",
+      "type": "transact",
       "index_type": "i64",
       "key_names": ["primary_key"],
       "key_types": ["uint64"]
