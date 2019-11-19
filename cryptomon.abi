@@ -452,7 +452,7 @@
             "key_types": []
         },
         {
-            "name": "market",
+            "name": "marketplace",
             "type": "marketplace",
             "index_type": "i64",
             "key_names": [],

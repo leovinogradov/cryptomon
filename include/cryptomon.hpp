@@ -178,13 +178,13 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     //typedef eosio::multi_index<"_market"_n, marketplace, eosio::indexed_by<"playerid"_n, eosio::const_mem_fun<market, uint64_t, &market::by_playerId>>> market_data;
 
     typedef eosio::multi_index<"players"_n, player> p_data;
-    typedef eosio::multi_index<"market"_n, marketplace> m_data;
+    //typedef eosio::multi_index<"market"_n, marketplace> m_data;
     typedef eosio::multi_index<"cryptomons"_n, cryptomons> c_data;
     typedef eosio::multi_index<"transacts"_n, transact> t_data;
 
     c_data mons_table;
     p_data player_table;
-    m_data market_table;
+    //m_data market_table;
     t_data transact_table;
 
   private:

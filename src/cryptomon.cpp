@@ -4,7 +4,7 @@ using eosio::contract;
 
 //class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract{
   //public:
-    cryptomon::cryptomon(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds): contract(receiver, code, ds), mons_table(receiver, code.value), player_table(receiver, code.value), market_table(receiver, code.value), transact_table(receiver, code.value)
+    cryptomon::cryptomon(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds): contract(receiver, code, ds), mons_table(receiver, code.value), player_table(receiver, code.value), transact_table(receiver, code.value)
     {}
     //applying an item to specified cryptomon for wanted effects
     [[eosio::action]]
