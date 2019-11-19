@@ -169,13 +169,17 @@ using eosio::contract;
     void cryptomon::purchasemon(eosio::name acc, uint64_t c_index){
         //require_auth(buyer);
         auto buyer_iterator = player_table.find(acc.value);
-        auto market_iterator = market_table.find(c_index);
-        auto market_entry = market_table.get(c_index);
+        // auto market_iterator = market_table.find(c_index);
+        auto market_iterator = trade_table.find(c_index);
+        auto market_entry = trade_table.get(c_index);
         eosio::name seller = market_entry.seller;
         auto seller_iterator = player_table.find(seller.value);
         auto buyer = player_table.get(acc.value);
         eosio::asset to_pay = market_entry.cost;
         //uint64_t cost = market_entry.askingPrice
+
+        eosio::check(!market_entry.account_two, "This is a trade not a listing");
+        
         eosio::check(acc != seller, "Cannot perform action with self!");
         eosio::check(market_iterator != market_table.end(), "No record exists from seller!");
         eosio::check(buyer_iterator != player_table.end(), "No record exists for buyer");
