@@ -42,19 +42,16 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     void deleteplayer(eosio::name acc);
 
     [[eosio::action]]
-    void deletemon(eosio::name acc);
+    void deletemon(eosio::name acc, uint64_t cryptomon_index);
 
     [[eosio::action]]
-    void listmon(eosio::name acc, eosio::asset price, uint64_t delay);
+    void listmon(eosio::name acc, eosio::asset price, uint64_t delay, uint64_t cryptomon_index);
 
     [[eosio::action]]
-    void delistmon(uint64_t c_index);
+    void delistmon(eosio::name acc, uint64_t c_index);
 
     [[eosio::action]]
     void purchasemon(eosio::name acc, uint64_t c_index);
-
-    [[eosio::action]]
-    void trademon(eosio::name account_one, eosio::name account_two);
 
     [[eosio::action]]
     void accepttrade(eosio::name account, uint64_t cryptomon_index);
@@ -62,13 +59,13 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     actions dealt with modifying state of cryptomon
     */
     [[eosio::action]]
-    void setname(eosio::name acc, std::string s);
+    void setname(eosio::name acc, std::string s, uint64_t cryptomon_index);
 
     [[eosio::action]]
-    void interact(eosio::name acc);
+    void interact(eosio::name acc, uint64_t cryptomon_index);
 
     [[eosio::action]]
-    void itemapply(eosio::name acc, uint8_t item);
+    void itemapply(eosio::name acc, uint8_t item, uint64_t cryptomon_index);
 
     [[eosio::action]]
     void itemacquire(eosio::name acc);
@@ -83,14 +80,15 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     void withdraw(eosio::name acc, eosio::asset amount);
 
     [[eosio::action]]
-    void canceltrade(uint64_t cryptomon_index);
+    void canceltrade(eosio::name account, uint64_t cryptomon_index);
 
     [[eosio::action]]
-    void inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t duration);
+    void inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t duration, uint64_t c1, uint64_t c2);
 
     uint32_t now();
 
-    int findItem(uint8_t item, const std::vector<uint8_t> &v);
+    template <typename T>
+    int findItem(T item, const std::vector<T> &v);
 
 /*
     struct mon{
@@ -112,7 +110,8 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
       std::vector<uint8_t> inventory;
       std::string playerName;
       eosio::asset funds;
-      uint64_t cryptomon_index;
+      std::vector<uint64_t> cryptomon_indexes;
+      //uint64_t cryptomon_index;
       bool has_cryptomon;
       //uint64_t playerId;
       //cryptomon monster;
@@ -124,9 +123,10 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
       eosio::name account_one;
       eosio::name account_two;
       uint64_t cryptomon_index;
+      uint64_t cryptomon_index2;
       bool swap;
       eosio::asset price;
-      uint64_t primary_key() const { return cryptomon_index; }
+      uint64_t primary_key() const { return cryptomon_index2; }
     };
 
 
@@ -160,6 +160,7 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
       uint8_t hunger;
       eosio::time_point start;
       eosio::time_point current;
+      eosio::name current_owner;
       std::string mon_name;
       uint64_t primary_key() const {return key; }
     };

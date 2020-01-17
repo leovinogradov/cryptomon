@@ -1,0 +1,139 @@
+executed transaction: 74bbf440fcbd9ff6ea051875a00d05d8670ee808a52a876a4ee8217409d3f4db  200 bytes  164 us
+warn  2019-12-11T06:48:13.021 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#         eosio <= eosio::newaccount            {"creator":"eosio","name":"cryptomon","owner":{"threshold":1,"keys":[{"key":"EOS5LabEzJh4sStF5TyLGg7...
+executed transaction: 8ff7c6a5768425bead60f06934174a8a3547cdcd6b591bc9eaee6eead60ffb2f  200 bytes  144 us
+warn  2019-12-11T06:48:15.032 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#         eosio <= eosio::newaccount            {"creator":"eosio","name":"bob","owner":{"threshold":1,"keys":[{"key":"EOS5LabEzJh4sStF5TyLGg718vs52...
+executed transaction: 89bc893a878c1faabb01861d6e9433c6d9cbafede461bda97ad98a1f63d89876  200 bytes  215 us
+warn  2019-12-11T06:48:17.050 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#         eosio <= eosio::newaccount            {"creator":"eosio","name":"alice","owner":{"threshold":1,"keys":[{"key":"EOS5LabEzJh4sStF5TyLGg718vs...
+executed transaction: 60b35abad7ca8b32d0a0f5ac4082a74d83f84270c7e35152488d3075c85db323  200 bytes  162 us
+warn  2019-12-11T06:48:19.060 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#         eosio <= eosio::newaccount            {"creator":"eosio","name":"eosio.token","owner":{"threshold":1,"keys":[{"key":"EOS5LabEzJh4sStF5TyLG...
+executed transaction: a0f48207b0b55b722e58ca81126fc9c1fb699c76dc518bc483aaa327f7cd0140  200 bytes  164 us
+warn  2019-12-11T06:48:21.072 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#         eosio <= eosio::newaccount            {"creator":"eosio","name":"issuer","owner":{"threshold":1,"keys":[{"key":"EOS5LabEzJh4sStF5TyLGg718v...
+executed transaction: 68240bac105f389eef22e33018628f825b46b2726a41cb783eb9862173bc602d  184 bytes  201 us
+warn  2019-12-11T06:48:23.087 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#         eosio <= eosio::updateauth            {"account":"cryptomon","permission":"active","parent":"owner","auth":{"threshold":1,"keys":[{"key":"...
+Reading WASM from /home/cameron/contracts/cryptomon/cryptomon.wasm...
+Publishing contract...
+executed transaction: cb29efe02ebb40014ab157c7e364c81231e8a96e98b4a38a4559b0e903344c4f  17328 bytes  2135 us
+warn  2019-12-11T06:48:25.155 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#         eosio <= eosio::setcode               {"account":"cryptomon","vmtype":0,"vmversion":0,"code":"0061736d0100000001df012360000060057f7e7f7f7f...
+#         eosio <= eosio::setabi                {"account":"cryptomon","abi":"0e656f73696f3a3a6162692f312e3000160c757073657274706c617965720002036163...
+Reading WASM from /home/cameron/contracts/eosio.contracts/contracts/eosio.token/eosio.token.wasm...
+Publishing contract...
+executed transaction: 630cb0b5000a423f0d49c7c37197a54ac61f7b41069e7cc5c0eb4afcfa505eb9  6984 bytes  719 us
+warn  2019-12-11T06:48:30.185 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#         eosio <= eosio::setcode               {"account":"eosio.token","vmtype":0,"vmversion":0,"code":"0061736d0100000001a0011b60000060017e006002...
+#         eosio <= eosio::setabi                {"account":"eosio.token","abi":"0e656f73696f3a3a6162692f312e310008076163636f756e7400010762616c616e63...
+executed transaction: 8af98f2fcdb14e954ff3ce6a1200afece9e2dd738678fe7dbc1736fc9b0eb8db  120 bytes  197 us
+warn  2019-12-11T06:48:35.206 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#   eosio.token <= eosio.token::create          {"issuer":"issuer","maximum_supply":"1000000000.0000 EOS"}
+executed transaction: a949850bc0120f82235b0019933b03e7cd717baab777dad354aab0dd5ce86c60  128 bytes  275 us
+warn  2019-12-11T06:48:38.222 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#   eosio.token <= eosio.token::issue           {"to":"issuer","quantity":"200.0000 EOS","memo":"memo"}
+executed transaction: dd07be9bae5cc968940e80cd7e034b511707e43893bb2f1922eeac6461b1012c  128 bytes  271 us
+warn  2019-12-11T06:48:41.235 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#   eosio.token <= eosio.token::transfer        {"from":"issuer","to":"alice","quantity":"100.0000 EOS","memo":"m"}
+#        issuer <= eosio.token::transfer        {"from":"issuer","to":"alice","quantity":"100.0000 EOS","memo":"m"}
+#         alice <= eosio.token::transfer        {"from":"issuer","to":"alice","quantity":"100.0000 EOS","memo":"m"}
+executed transaction: 274f41a9eb5130e921b80f2ec7864eb3117e17c67d247df2d56ae46dd532c815  112 bytes  224 us
+warn  2019-12-11T06:48:44.260 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#     cryptomon <= cryptomon::upsertplayer      {"acc":"alice","s":"Alice"}
+executed transaction: d55c06276297a5180b133a878ca3849270243cfca448ced7c535f285f9ef80b6  104 bytes  256 us
+warn  2019-12-11T06:48:47.274 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#     cryptomon <= cryptomon::upsertplayer      {"acc":"bob","s":"Bob"}
+executed transaction: 7be91af16cb7917ffb642bc0baea9768e632c49ca6a57fc780147fcc14ad1632  104 bytes  216 us
+warn  2019-12-11T06:48:49.294 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#     cryptomon <= cryptomon::createmon         {"acc":"bob"}
+executed transaction: 0ddf6960ad8dbf536a1e73fa17947662a1eddf7f2f8330ce76f58f6cd5db9d7d  104 bytes  251 us
+warn  2019-12-11T06:48:51.309 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#     cryptomon <= cryptomon::createmon         {"acc":"alice"}
+executed transaction: 13913049aff5c998466c802ea011407284674813161df9acec0ef994cff315d1  136 bytes  332 us
+warn  2019-12-11T06:48:53.329 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#   eosio.token <= eosio.token::transfer        {"from":"alice","to":"cryptomon","quantity":"25.0000 EOS","memo":"Transfer!"}
+#         alice <= eosio.token::transfer        {"from":"alice","to":"cryptomon","quantity":"25.0000 EOS","memo":"Transfer!"}
+#     cryptomon <= eosio.token::transfer        {"from":"alice","to":"cryptomon","quantity":"25.0000 EOS","memo":"Transfer!"}
+executed transaction: 63154b1fb1f7fbce88643a2596e57050dbddb2539244b8e3739bca9a0a08eb0c  184 bytes  368 us
+warn  2019-12-11T06:48:55.344 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#     cryptomon <= cryptomon::inittrade         {"account_one":"alice","account_two":"bob","price":"10.0000 EOS","swap":1,"duration":10000}
+{
+  "rows": [{
+      "key": "alice",
+      "inventory": [],
+      "playerName": "Alice",
+      "funds": "25.0000 EOS",
+      "cryptomon_index": 1,
+      "has_cryptomon": 1
+    },{
+      "key": "bob",
+      "inventory": [],
+      "playerName": "Bob",
+      "funds": "0 ",
+      "cryptomon_index": 0,
+      "has_cryptomon": 1
+    }
+  ],
+  "more": false
+}
+{
+  "rows": [{
+      "key": 0,
+      "HP": 15,
+      "level": 1,
+      "happiness": 15,
+      "health": 15,
+      "hunger": 15,
+      "start": "2019-12-11T06:48:49.500",
+      "current": "2019-12-11T06:48:49.500",
+      "mon_name": "SET NAME"
+    },{
+      "key": 1,
+      "HP": 15,
+      "level": 1,
+      "happiness": 15,
+      "health": 15,
+      "hunger": 15,
+      "start": "2019-12-11T06:48:51.500",
+      "current": "2019-12-11T06:48:51.500",
+      "mon_name": "SET NAME"
+    }
+  ],
+  "more": false
+}
+{
+  "rows": [{
+      "account_one": "alice",
+      "account_two": "bob",
+      "cryptomon_index": 1,
+      "swap": 1,
+      "price": "10.0000 EOS"
+    }
+  ],
+  "more": false
+}
+executed transaction: b7aaa0ee2f1a86f94fd87f09501e2052dddc43949549177b2d0c6408939fa391  112 bytes  351 us
+warn  2019-12-11T06:48:59.400 thread-0  main.cpp:492                  print_result         ] warning: transaction executed locally, but may not be confirmed by the network yet
+#     cryptomon <= cryptomon::accepttrade       {"account":"bob","cryptomon_index":1}
+>> true
+{
+  "rows": [{
+      "key": "alice",
+      "inventory": [],
+      "playerName": "Alice",
+      "funds": "15.0000 EOS",
+      "cryptomon_index": 0,
+      "has_cryptomon": 1
+    },{
+      "key": "bob",
+      "inventory": [],
+      "playerName": "Bob",
+      "funds": "10.0000 EOS",
+      "cryptomon_index": 1,
+      "has_cryptomon": 1
+    }
+  ],
+  "more": false
+}

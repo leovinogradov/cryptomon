@@ -43,6 +43,10 @@
         {
           "name": "acc",
           "type": "name"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
         }
       ]
     },
@@ -61,6 +65,10 @@
         {
           "name": "delay",
           "type": "uint64"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
         }
       ]
     },
@@ -71,6 +79,10 @@
         {
           "name": "c_index",
           "type": "uint64"
+        },
+        {
+          "name": "acc",
+          "type": "name"
         }
       ]
     },
@@ -135,6 +147,14 @@
         {
           "name": "duration",
           "type": "uint64"
+        },
+        {
+          "name": "c1",
+          "type": "uint64"
+        },
+        {
+          "name": "c2",
+          "type": "uint64"
         }
       ]
     },
@@ -163,6 +183,10 @@
         {
           "name": "s",
           "type": "string"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
         }
       ]
     },
@@ -173,6 +197,10 @@
         {
           "name": "acc",
           "type": "name"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
         }
       ]
     },
@@ -187,6 +215,10 @@
         {
           "name": "item",
           "type": "uint8"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
         }
       ]
     },
@@ -254,8 +286,8 @@
           "type": "asset"
         },
         {
-          "name": "cryptomon_index",
-          "type": "uint64"
+          "name": "cryptomon_indexes",
+          "type": "uint64[]"
         },
         {
           "name": "has_cryptomon",
@@ -337,6 +369,10 @@
         },
         {
           "name": "cryptomon_index",
+          "type": "uint64"
+        },
+        {
+          "name": "cryptomon_index2",
           "type": "uint64"
         },
         {

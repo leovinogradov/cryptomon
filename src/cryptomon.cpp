@@ -2,10 +2,12 @@
 
 using eosio::contract;
 
-//class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract{
-  //public:
     cryptomon::cryptomon(eosio::name receiver, eosio::name code, eosio::datastream<const char*> ds): contract(receiver, code, ds), mons_table(receiver, code.value), player_table(receiver, code.value), transact_table(receiver, code.value)
-    {}
+    {
+      //upsertplayer(receiver, "cryptomon");
+      //createmon(receiver);
+      //setname(receiver, "genesis", 0);
+    }
     //applying an item to specified cryptomon for wanted effects
     [[eosio::action]]
     void cryptomon::upsertplayer(eosio::name acc, std::string s){
@@ -17,7 +19,7 @@ using eosio::contract;
           row.key = acc;
           row.playerName = s;
           row.has_cryptomon = false;
-          row.cryptomon_index = 0;
+          //row.cryptomon_indexes.push_back(0);
         });
       }
       else{
@@ -35,7 +37,7 @@ using eosio::contract;
 
       if(iterator != player_table.end()){
         uint64_t c_index;
-        if(!(player_table.get(acc.value).has_cryptomon)){
+        if(player_table.get(acc.value).cryptomon_indexes.size() < 5){
 
           mons_table.emplace(acc, [&](auto &row){ //creating cryptomon entry
             row.key = mons_table.available_primary_key();
@@ -51,7 +53,9 @@ using eosio::contract;
           });
 
           player_table.modify(iterator, acc, [&](auto &row){ //
-              row.cryptomon_index = c_index;
+              //row.cryptomon_index = c_index;
+              //row.cryptomon_indexes.erase(cryptomon_indexes.begin());
+              row.cryptomon_indexes.emplace_back(c_index);
               row.has_cryptomon = true;
           });
 
@@ -95,12 +99,14 @@ using eosio::contract;
       auto player_iterator = player_table.find(acc.value);
       eosio::check(player_iterator != player_table.end(), "Player does not exist");
 
-      auto c_index = player_table.get(acc.value).cryptomon_index; //delete player
+      //auto c_index = player_table.get(acc.value).cryptomon_index; //delete player
+      for(uint64_t c_index : player_table.get(acc.value).cryptomon_indexes){
+        auto cryptomons_iterator = mons_table.find(c_index); //find cryptomon associated with player
+        mons_table.erase(cryptomons_iterator);
+      }
+
       auto transact_iterator = transact_table.find(acc.value);
       player_table.erase(player_iterator);
-
-      auto cryptomons_iterator = mons_table.find(c_index); //find cryptomon associated with player
-      mons_table.erase(cryptomons_iterator);
 
       if(transact_iterator != transact_table.end()){ //if there is an entry in market, delete it
         transact_table.erase(transact_iterator);
@@ -108,28 +114,40 @@ using eosio::contract;
     }
 
     [[eosio::action]]
-    void cryptomon::deletemon(eosio::name acc){
+    void cryptomon::deletemon(eosio::name acc, uint64_t cryptomon_index){
         //require_auth(acc);
         auto iterator = player_table.find(acc.value);
-        uint64_t c_index;
+        //uint64_t c_index;
         if(iterator != player_table.end()){
           if(player_table.get(acc.value).has_cryptomon){
 
             player_table.modify(iterator, acc, [&](auto &row){
-              row.has_cryptomon = false;
-              c_index = row.cryptomon_index;
+              if(row.cryptomon_indexes.size() > 0){
+                int location = findItem(cryptomon_index, row.cryptomon_indexes);
+                if(location > -1){
+                  row.cryptomon_indexes.erase(row.cryptomon_indexes.begin() + location);
+                }
+                else{
+                  eosio::print("Cannot delete Cryptomon that you do not possess!");
+                  return ;
+                }
+                row.has_cryptomon = (row.cryptomon_indexes.size() == 0)? false:true;
+                //c_index = row.cryptomon_index;
+                //row.has_cryptomon = false;
+            }
             });
 
-            auto cryptomons_iterator = mons_table.find(c_index);
+            auto cryptomons_iterator = mons_table.find(cryptomon_index);
             mons_table.erase(cryptomons_iterator);
           }
         }
       }
 
     [[eosio::action]]
-    void cryptomon::listmon(eosio::name acc, eosio::asset price, uint64_t delay){
+    void cryptomon::listmon(eosio::name acc, eosio::asset price, uint64_t delay, uint64_t cryptomon_index){
       //require_auth(acc);
       auto player_iterator = player_table.find(acc.value);
+      auto player_entry = player_table.get(acc.value);
       auto trans_iterator = transact_table.find(acc.value);
       if(player_iterator == player_table.end()){
         eosio::print("No record exists of this player!");
@@ -137,18 +155,27 @@ using eosio::contract;
       else{
         if(trans_iterator == transact_table.end()){
           //no entry in marketplace, create entry
-          auto c_index = player_table.get(acc.value).cryptomon_index;
-          transact_table.emplace(acc, [&](auto &row){
-            row.cryptomon_index = c_index;
-            row.account_one = acc;
-            row.price = price;
-            row.swap = false;
+          //auto c_index = player_table.get(acc.value).cryptomon_index;
+          const std::vector<uint64_t> &c = player_entry.cryptomon_indexes;
+          int location = findItem<uint64_t>(cryptomon_index, c);
+          eosio::print(cryptomon_index);
 
-          });
-          eosio::transaction t{};
-          t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "delistmon"_n, std::make_tuple(c_index));
-          t.delay_sec = delay;
-          t.send(acc.value, acc);
+          if(location > -1){
+            transact_table.emplace(acc, [&](auto &row){
+              row.cryptomon_index2 = cryptomon_index;
+              row.account_one = acc;
+              row.price = price;
+              row.swap = false;
+            });
+            eosio::transaction t{};
+            t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "delistmon"_n, std::make_tuple(cryptomon_index));
+            t.delay_sec = delay;
+            t.send(acc.value, acc);
+          }
+          else{
+            eosio::print("Cannot sell Cryptomon that you do not possess!");
+            return;
+          }
         }
         else{
             transact_table.modify(trans_iterator, acc, [&](auto &row){
@@ -159,11 +186,12 @@ using eosio::contract;
     }
 
     [[eosio::action]]
-    void cryptomon::delistmon(uint64_t c_index){
+    void cryptomon::delistmon(eosio::name acc, uint64_t c_index){
       //require_auth(acc);
 
       auto iterator = transact_table.find(c_index);
       eosio::check(iterator != transact_table.end(), "Cryptomon listing does not exist!");
+      eosio::check(transact_table.get(c_index).account_one == acc, "Cannot remove sell event that you did not initiate!");
       transact_table.erase(iterator);
     }
 
@@ -190,14 +218,19 @@ using eosio::contract;
 
         if(buyer.funds.amount > transact_entry.price.amount && buyer_iterator != player_table.end()){
           player_table.modify(buyer_iterator, acc, [&](auto &row){
-            row.cryptomon_index = c_index;
+            //row.cryptomon_index = c_index;
+            row.cryptomon_indexes.emplace_back(c_index);
             row.has_cryptomon = true;
             row.funds = row.funds - transact_entry.price;
           });
 
           player_table.modify(seller_iterator, seller, [&](auto &row){
-            row.has_cryptomon = false;
-            row.cryptomon_index = 0; //the index of seller must be changed to indicate no cryptomon
+            //row.has_cryptomon = false;
+            int location = findItem<uint64_t>(c_index, row.cryptomon_indexes);
+            if(location > -1){
+              row.cryptomon_indexes.erase(row.cryptomon_indexes.begin() + location);
+              row.has_cryptomon = (row.cryptomon_indexes.size() == 0)? false: true;
+            }
             if(row.funds.amount == 0){
               row.funds = transact_entry.price;
             }
@@ -206,38 +239,16 @@ using eosio::contract;
             }
           });
         }
-        eosio::action(eosio::permission_level{acc, "active"_n}, get_self(), "delistmon"_n, std::make_tuple(c_index)).send();
+        eosio::action(eosio::permission_level{acc, "active"_n}, get_self(), "delistmon"_n, std::make_tuple(transact_entry.account_one, c_index)).send();
         eosio::cancel_deferred(seller.value);
         //eosio::action(eosio::permission_level{acc, "active"_n}, "eosio.token"_n, "transfer"_n, std::make_tuple(acc, seller, buyer_iterator->funds, std::string("Transferring funds!"))).send();
       }
 
     [[eosio::action]]
-    void cryptomon::trademon(eosio::name account_one, eosio::name account_two){
-        auto iterator_account_one = player_table.find(account_one.value);
-        auto iterator_account_two = player_table.find(account_two.value);
-        eosio::check(iterator_account_one != player_table.end(), "No record exists for account one!");
-        eosio::check(iterator_account_two != player_table.end(), "No record exists for account two!");
-
-        if(iterator_account_one != player_table.end() && iterator_account_two != player_table.end()){
-          auto r1 = player_table.get(account_one.value);
-          uint64_t c_index_one = r1.cryptomon_index;
-          auto r2 = player_table.get(account_two.value);
-          uint64_t c_index_two = r2.cryptomon_index;
-
-          player_table.modify(iterator_account_one, account_one, [&](auto &row){
-            row.cryptomon_index = c_index_two;
-          });
-
-          player_table.modify(iterator_account_two, account_two, [&] (auto &row){
-            row.cryptomon_index = c_index_one;
-          });
-    }
-  }
-
-    [[eosio::action]]
-    void cryptomon::canceltrade(uint64_t cryptomon_index){
+    void cryptomon::canceltrade(eosio::name account, uint64_t cryptomon_index){
       auto trade_itr = transact_table.find(cryptomon_index);
-      if(trade_itr != transact_table.end()){
+      auto trade_entry = transact_table.get(cryptomon_index);
+      if(trade_itr != transact_table.end() && (account == trade_entry.account_one || account == trade_entry.account_two)){
         transact_table.erase(trade_itr);
       }
       else{
@@ -246,8 +257,8 @@ using eosio::contract;
     }
 
     [[eosio::action]]
-    void cryptomon::inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t duration) {
-      //require_auth(acct);
+    void cryptomon::inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t duration, uint64_t c1 = 0, uint64_t c2 = 0) {
+      //require_auth(account_one);
       auto account_one_itr = player_table.find(account_one.value);
       auto account_two_itr = player_table.find(account_two.value);
       if(account_one_itr == player_table.end() || account_two_itr == player_table.end()){
@@ -257,9 +268,10 @@ using eosio::contract;
       else{
         auto entry_account_one = player_table.get(account_one.value);
         auto entry_account_two = player_table.get(account_two.value);
-        auto trade_itr = transact_table.find(entry_account_one.cryptomon_index);
-        if(!entry_account_two.has_cryptomon){
-          eosio::print("Cannot initiate trade with player who has no cryptomon!");
+        auto trade_itr = transact_table.find(c2);
+        //auto trade_itr = transact_table.find(entry_account_one.cryptomon_index);
+        if(!entry_account_two.has_cryptomon || findItem<uint64_t>(c2, entry_account_two.cryptomon_indexes) == -1){
+          eosio::print("Cannot initiate trade with player who does not have specified cryptomon!");
           return;
         }
         if(entry_account_one.funds.amount >= price.amount){
@@ -267,10 +279,12 @@ using eosio::contract;
               transact_table.emplace(account_one, [&](auto &entry){ // creating new trade
                 entry.account_one = account_one;
                 entry.account_two = account_two;
+                entry.cryptomon_index2 = c2;
                 if(swap){
-                  if(entry_account_one.has_cryptomon){
+                  if(entry_account_one.has_cryptomon && findItem<uint64_t>(c1, entry_account_one.cryptomon_indexes) > -1){
                     entry.swap = true;
-                    entry.cryptomon_index = entry_account_one.cryptomon_index;
+                    entry.cryptomon_index = c1;
+                    //entry.cryptomon_index = entry_account_one.cryptomon_index;
                   }
                   else{
                     eosio::print("Do not have a cryptomon to swap!");
@@ -283,22 +297,31 @@ using eosio::contract;
                 entry.price = price;
               });
               eosio::transaction t{}; //delete trade after duration period
-              t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
+              //t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
+              t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(c2));
               t.delay_sec = duration;
               t.send(account_one.value, account_one);
             }
           else{
             eosio::cancel_deferred(account_one.value);
             transact_table.modify(trade_itr, account_one, [&](auto &row){
-              row.account_two = account_two;
-              row.price = price;
+              if(findItem<uint64_t>(c2, entry_account_two.cryptomon_indexes) > -1){
+                row.account_two = account_two;
+                row.price = price;
+                row.cryptomon_index2 = c2;
+              }
+              else{
+                eosio::print("Cannot initiate trade with player who does not have specified cryptomon!");
+                return;
+              }
               if(swap){
-                if(entry_account_one.has_cryptomon){
+                if(entry_account_one.has_cryptomon && findItem<uint64_t>(c1, entry_account_one.cryptomon_indexes) > -1){
                   row.swap = true;
-                  row.cryptomon_index = entry_account_one.cryptomon_index;
+                  row.cryptomon_index = c1;
+                  //row.cryptomon_index = entry_account_one.cryptomon_index;
                 }
                 else{
-                  eosio::print("Do not have a cryptomon to swap!");
+                  eosio::print("Do not have that cryptomon to swap!");
                   return;
                 }
               }
@@ -307,7 +330,8 @@ using eosio::contract;
               }
             });
             eosio::transaction t{}; //delete trade after duration period
-            t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
+            //t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
+            t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(c2));
             t.delay_sec = duration;
             t.send(account_one.value, account_one);
               }
@@ -336,13 +360,16 @@ using eosio::contract;
 
       auto acceptor = player_table.get(account.value);
       auto initiator = player_table.get(trade_instance.account_one.value);
-      uint64_t c_index_acceptor = acceptor.cryptomon_index;
-      uint64_t c_index_initiator = initiator.cryptomon_index;
-
-      eosio::check((c_index_initiator == trade_instance.cryptomon_index), "Invalid cryptomon index"); // should never happen but good to check anyway
-      eosio::print(trade_instance.swap);
+      uint64_t c_index_acceptor = trade_instance.cryptomon_index2;
+      uint64_t c_index_initiator = trade_instance.cryptomon_index;
+      //uint64_t c_index_acceptor = acceptor.cryptomon_index;
+      //uint64_t c_index_initiator = initiator.cryptomon_index;
+      //eosio::check((c_index_initiator == trade_instance.cryptomon_index), "Invalid cryptomon index"); // should never happen but good to check anyway
       if(acceptor_iterator != player_table.end()){
         player_table.modify(acceptor_iterator, account, [&](auto &row){
+          int location = findItem(c_index_acceptor, acceptor.cryptomon_indexes);
+          row.cryptomon_indexes.erase(row.cryptomon_indexes.begin() + location);
+
           if(row.funds.amount == 0){
             row.funds = trade_instance.price;
           }
@@ -350,65 +377,67 @@ using eosio::contract;
             row.funds += trade_instance.price;
           }
           if(trade_instance.swap){
-            row.cryptomon_index = c_index_initiator;
+            //row.cryptomon_index = c_index_initiator;
+            row.cryptomon_indexes.emplace_back(c_index_initiator);
             row.has_cryptomon = true;
           }
           else{
-            row.cryptomon_index = 0;
-            row.has_cryptomon = false;
+            //row.cryptomon_index = 0;
+            row.has_cryptomon = (row.cryptomon_indexes.size() <= 0)? 0: 1;
           }
         });
 
         player_table.modify(initiator_iterator, trade_instance.account_one, [&](auto &row){
-            row.cryptomon_index = c_index_acceptor;
+            //row.cryptomon_index = c_index_acceptor;
+            row.cryptomon_indexes.emplace_back(c_index_acceptor);
             row.has_cryptomon = true;
             row.funds -= trade_instance.price;
+            if(trade_instance.swap){
+              int location = findItem<uint64_t>(c_index_initiator, row.cryptomon_indexes);
+              row.cryptomon_indexes.erase(row.cryptomon_indexes.begin() + location);
+            }
         });
         transact_table.erase(trade_itr);
       }
     }
 
     [[eosio::action]]
-    void cryptomon::setname(eosio::name acc, std::string s){
+    void cryptomon::setname(eosio::name acc, std::string s, uint64_t cryptomon_index){
       //require_auth(acc);
       auto iterator = player_table.find(acc.value);
-      auto c_index = player_table.get(acc.value).cryptomon_index;
+      auto player_entry = player_table.get(acc.value);
+      int location = findItem<uint64_t>(cryptomon_index, player_entry.cryptomon_indexes);
 
-      if(iterator != player_table.end() && player_table.get(acc.value).has_cryptomon){
-        auto cryptomons_iterator = mons_table.find(c_index);
-        mons_table.modify(cryptomons_iterator, acc, [&](auto &row){
-           row.mon_name = s;
-        });
-      }
-    }
+      //auto c_index = player_table.get(acc.value).cryptomon_index;
 
-    /*
-
-    [[eosio::action]]
-    void cryptomon::interact(eosio::name acc){
-      //require_auth(acc);
-      auto iterator = player_table.find(acc.value);
-      if(iterator != player_table.end() && player_table.get(acc.value).has_cryptomon){
-        auto c_index = player_table.get(acc.value).cryptomon_index;
-        auto cryptomons_iterator = mons_table.find(c_index);
-
-        mons_table.modify(cryptomons_iterator, acc, [&](auto &row){
-          row.HP += 5;
-          row.emotionalState = 1;
-        });
+      if(iterator != player_table.end()){
+        if(player_entry.has_cryptomon && location > -1){
+          auto cryptomons_iterator = mons_table.find(cryptomon_index);
+          mons_table.modify(cryptomons_iterator, acc, [&](auto &row){
+             row.mon_name = s;
+          });
+        }
+        else{
+          eosio::print("Cannot change cryptomon which does not belong to you!");
+        }
       }
       else{
-        eosio::print("Player record does not exist!");
+        eosio::print("Player does not exist!");
       }
     }
-    */
+
     //WHEN DEVICE BOOTS UP, call this function
     [[eosio::action]]
-    void cryptomon::interact(eosio::name acc){
+    void cryptomon::interact(eosio::name acc, uint64_t cryptomon_index){
       auto player_itr = player_table.find(acc.value);
+      auto player_entry = player_table.get(acc.value);
       eosio::check(player_itr != player_table.end(), "Player does not exist");
       eosio::check(player_table.get(acc.value).has_cryptomon, "Player does not have a cryptomon");
-      auto cryptomon_index = player_table.get(acc.value).cryptomon_index;
+      //auto cryptomon_index = player_table.get(acc.value).cryptomon_index;
+      if(findItem<uint64_t>(cryptomon_index, player_entry.cryptomon_indexes) == -1){
+        eosio::print("Cannot interact with Cryptomon that you do not possess!");
+        return ;
+      }
       auto cryptomon_itr = mons_table.find(cryptomon_index);
       eosio::time_point t1 = mons_table.get(cryptomon_index).current;
       eosio::time_point t2 = eosio::current_time_point();
@@ -416,23 +445,25 @@ using eosio::contract;
       eosio::print(duration.to_seconds());
       if(duration > eosio::minutes(3)){ //arbitrary, can set time to any point to take away c stats
         mons_table.modify(cryptomon_itr, acc, [&](auto &row){
-          row.health -= 2;
-          row.hunger -= 2;
-          row.happiness -= 2;
+          row.health -= 1;
+          row.hunger -= 1;
+          row.happiness -= 1;
           row.current = eosio::current_time_point();
         });
       }
     }
 
     [[eosio::action]]
-    void cryptomon::itemapply(eosio::name acc, uint8_t item){
+    void cryptomon::itemapply(eosio::name acc, uint8_t item, uint64_t cryptomon_index){
       auto acc_itr = player_table.find(acc.value);
       eosio::check(acc_itr != player_table.end(), "Player not found");
       auto acc_entry = player_table.get(acc.value);
       eosio::check(acc_entry.has_cryptomon, "Player does not have a cryptomon");
-      auto cryptomon_itr = mons_table.find(acc_entry.cryptomon_index);
+      eosio::check(findItem<uint64_t>(cryptomon_index, acc_entry.cryptomon_indexes) > -1, "Cannot apply item to a Cryptomon you do not possess!");
+      auto cryptomon_itr = mons_table.find(cryptomon_index);
+      //auto cryptomon_itr = mons_table.find(acc_entry.cryptomon_index);
       if(!acc_entry.inventory.empty()){
-        int index = findItem(item, acc_entry.inventory);
+        int index = findItem<uint8_t>(item, acc_entry.inventory);
         if(index > -1){
           mons_table.modify(cryptomon_itr, acc, [&](auto &row){
             switch(item){
@@ -505,7 +536,7 @@ using eosio::contract;
       eosio::check(player_itr != player_table.end(), "Player does not exist");
       auto acc_entry = player_table.get(acc.value);
       if(!acc_entry.inventory.empty()){
-        int index = findItem(item, acc_entry.inventory);
+        int index = findItem<uint8_t>(item, acc_entry.inventory);
         if(index > -1){
           player_table.modify(player_itr, acc, [&](auto &row){
             std::vector<uint8_t> &v = row.inventory;
@@ -521,7 +552,8 @@ using eosio::contract;
       }
     }
 
-    int cryptomon::findItem(uint8_t item, const std::vector<uint8_t> &v){
+    template <typename T>
+    int cryptomon::findItem(T item, const std::vector<T> &v){
       for(int i = 0; i < v.size(); i++){
         if (v[i] == item){
           return i;

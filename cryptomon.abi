@@ -22,6 +22,10 @@
             "base": "",
             "fields": [
                 {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
                     "name": "cryptomon_index",
                     "type": "uint64"
                 }
@@ -74,6 +78,10 @@
                     "type": "time_point"
                 },
                 {
+                    "name": "current_owner",
+                    "type": "name"
+                },
+                {
                     "name": "mon_name",
                     "type": "string"
                 }
@@ -86,6 +94,10 @@
                 {
                     "name": "acc",
                     "type": "name"
+                },
+                {
+                    "name": "cryptomon_index",
+                    "type": "uint64"
                 }
             ]
         },
@@ -103,6 +115,10 @@
             "name": "delistmon",
             "base": "",
             "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
                 {
                     "name": "c_index",
                     "type": "uint64"
@@ -132,6 +148,14 @@
                 {
                     "name": "duration",
                     "type": "uint64"
+                },
+                {
+                    "name": "c1",
+                    "type": "uint64"
+                },
+                {
+                    "name": "c2",
+                    "type": "uint64"
                 }
             ]
         },
@@ -142,6 +166,10 @@
                 {
                     "name": "acc",
                     "type": "name"
+                },
+                {
+                    "name": "cryptomon_index",
+                    "type": "uint64"
                 }
             ]
         },
@@ -166,6 +194,10 @@
                 {
                     "name": "item",
                     "type": "uint8"
+                },
+                {
+                    "name": "cryptomon_index",
+                    "type": "uint64"
                 }
             ]
         },
@@ -197,6 +229,10 @@
                 },
                 {
                     "name": "delay",
+                    "type": "uint64"
+                },
+                {
+                    "name": "cryptomon_index",
                     "type": "uint64"
                 }
             ]
@@ -245,8 +281,8 @@
                     "type": "asset"
                 },
                 {
-                    "name": "cryptomon_index",
-                    "type": "uint64"
+                    "name": "cryptomon_indexes",
+                    "type": "uint64[]"
                 },
                 {
                     "name": "has_cryptomon",
@@ -279,20 +315,10 @@
                 {
                     "name": "s",
                     "type": "string"
-                }
-            ]
-        },
-        {
-            "name": "trademon",
-            "base": "",
-            "fields": [
-                {
-                    "name": "account_one",
-                    "type": "name"
                 },
                 {
-                    "name": "account_two",
-                    "type": "name"
+                    "name": "cryptomon_index",
+                    "type": "uint64"
                 }
             ]
         },
@@ -310,6 +336,10 @@
                 },
                 {
                     "name": "cryptomon_index",
+                    "type": "uint64"
+                },
+                {
+                    "name": "cryptomon_index2",
                     "type": "uint64"
                 },
                 {
@@ -425,11 +455,6 @@
         {
             "name": "setname",
             "type": "setname",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "trademon",
-            "type": "trademon",
             "ricardian_contract": ""
         },
         {
