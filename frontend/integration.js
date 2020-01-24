@@ -70,7 +70,7 @@ require('yargs')
      expireSeconds: 30,
     });
   })
-  .command('listmon', 'List player's cryptomon for sale', {
+  .command('listmon', 'List players cryptomon for sale', {
       account: {
         describe: 'the account associated with player',
         alias: 'a',
@@ -88,7 +88,7 @@ require('yargs')
         alias: 'd',
         type: 'number',
         demandOption: true,
-      }
+      },
       index: {
         describe: 'the index of the cryptomon',
         alias: 'i',
@@ -216,7 +216,7 @@ require('yargs')
      expireSeconds: 30,
     });
   })
-  .command('setname', 'Set the name of player's cryptomon', {
+  .command('setname', 'Set the name of players cryptomon', {
       account: {
         describe: 'the account associated with player',
         alias: 'a',
@@ -247,7 +247,7 @@ require('yargs')
        }],
        data: {
          acc: argv.account,
-         s: argv.name
+         s: argv.name,
          cryptomon_index: argv.index
        },
      }]
@@ -355,7 +355,7 @@ require('yargs')
      expireSeconds: 30,
     });
   })
-  .command('itemdelete', 'Delete specified item from player's inventory', {
+  .command('itemdelete', 'Delete specified item from players inventory', {
       account: {
         describe: 'the account associated with player',
         alias: 'a',
