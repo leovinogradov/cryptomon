@@ -1,0 +1,16 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "\"cryptomon frontend\"",
+  "main": "integration.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eosjs": "^20.0.3",
+    "node-fetch": "^2.6.0",
+    "yargs": "^15.1.0"
+  }
+}
