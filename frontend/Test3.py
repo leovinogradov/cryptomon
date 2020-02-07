@@ -2,8 +2,8 @@ import pygame
 import os
 from time import sleep
 import RPi.GPIO as GPIO
-from option import Option
-from option import OptionWheel
+from Menus import *
+from Action import *
 
 class PygameView(object):
 
@@ -35,8 +35,11 @@ class PygameView(object):
         self.playtime = 0.0
         self.font = pygame.font.SysFont('mono', 20, bold=True)
 
-        self.init_main_screen()
+        #undetermined
+        #self.myMons = []
+        #self.myFood = []
 
+        self.menu = Main_Menu(self)
 
     def run(self):
         running = True
@@ -47,37 +50,50 @@ class PygameView(object):
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         running = False
-                    if event.key == pygame.K_RIGHT:
+                    elif event.key == pygame.K_RIGHT:
                         self.right_button(self.button_map[0])
-                    if event.key == pygame.K_DOWN:
+                    elif event.key == pygame.K_DOWN:
                         self.down_button(self.button_map[1])
-                    if event.key == pygame.K_LEFT:
+                    elif event.key == pygame.K_LEFT:
                         self.left_button(self.button_map[2])
                 elif event.type == pygame.MOUSEBUTTONUP:
                     x, y = pygame.mouse.get_pos()
                     if x > self.width*2/3:
                         self.right_button(self.button_map[0])
                     elif x > self.width/3:
-                        self.down_button(self.button_map[0])
+                        self.down_button(self.button_map[1])
                     else:
-                        self.left_button(self.button_map[0])
-
-            self.opWheel.draw_op_wheel()
+                        self.left_button(self.button_map[2])
+            self.menu.draw()
             pygame.display.flip()
             self.screen.blit(self.background, (0, 0))
 
         pygame.quit()
-
-    def init_main_screen(self):
-        self.background = pygame.image.load("Stage.jpg")
-        self.opWheel = OptionWheel(self)
-        
+                
     def right_button(self,callback_type):
-        self.opWheel.scroll_right()
+        self.menu.right_button()
     def down_button(self,callback_type):
-        self.opWheel.select()
+        self.menu.down_button()
     def left_button(self,callback_type):
-        self.opWheel.scroll_left()
+        self.menu.left_button()
+
+    def change_menu(self, action):
+        if action == Action.GO_TO_MAIN_MENU:
+            self.menu = Main_Menu(self)
+        elif action == Action.GO_TO_SELECT_MON_MENU:
+            self.menu = Select_Mon_Menu(self)
+        elif action == Action.GO_TO_FOOD_MENU:
+            self.menu = Food_Menu(self)
+        elif action == Action.GO_TO_INTERACT_MENU:
+            self.menu = Interact_Menu(self)
+        elif action == Action.GO_TO_MARKET_MENU:
+            self.menu = Market_Menu(self)
+        elif action == Action.GO_TO_FRIENDS_MENU:
+            self.menu = Friends_Menu(self)
+        elif action == Action.GO_TO_TRADE_MENU:
+            self.menu = Trade_Menu(self)
+        elif action == Action.GO_TO_PLAY_MENU:
+            self.menu = Play_Menu(self)
     
     def draw_FPS(self):
         milliseconds = self.clock.tick(self.fps)

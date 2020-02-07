@@ -20,7 +20,7 @@ class Option(object):
         self.text = text
         self.action = action
         
-    def draw_op(self, pyview, xOff, yOff):
+    def draw(self, pyview, xOff, yOff):
         if (xOff == 0) & (yOff == 0):            
             fw, fh = pyview.font.size(self.text)
             surface = pyview.font.render(self.text, True, (0, 255, 0))
@@ -35,32 +35,49 @@ class OptionWheel(object):
         self.pyview = pyview
         self.selected = False
         self.selection = 0
-        op1 = Option(pygame.image.load("LionHeadGrass.png"),"We Are Number 1",1)
-        op2 = Option(pygame.image.load("LionHeadElectric.png"),"We Are Number 2",1)
-        op3 = Option(pygame.image.load("LionHeadPoison.png"),"We Are Number 3",1)
-        op4 = Option(pygame.image.load("LionHeadNormal.png"),"We Are Number 4",1)
-        self.options = [op1, op2, op3, op4]
+        self.options = []
+
+    def append_option(self,image,text,action):
+        self.options.append(Option(pygame.image.load(image),text,action))
 
     def select(self):
-        i = 0#do nothing
+        #if self.selected == True:#turn off selection if selected
+        #    return
+        self.selected = True
+        print(self.options[self.selection].action)
+        #do nothing
         #act(self.options[self.selction].action)
         #act will perform the action interfaced by the act class
+
+    def deselect(self):
+        self.selected = False
         
-    def draw_op_wheel(self):
+    def draw(self):
         xOff = self.pyview.width*2//3
         yOff = self.pyview.height*1//3
+        center_option = -1
         opNum = len(self.options)
         for i in range(0,opNum):
             amtXOff = self.selection-i
             amtYOff = amtXOff
             if amtYOff > 0 :
                 amtYOff = -amtYOff
-            self.options[i].draw_op(self.pyview,xOff*amtXOff,yOff*amtYOff)
-
+            if amtXOff != 0:
+                if not self.selected:
+                    self.options[i].draw(self.pyview,xOff*amtXOff,yOff*amtYOff)
+            else:
+                center_option = i
+        if center_option >= 0:
+            self.options[center_option].draw(self.pyview,0,0)
+            
     def scroll_right(self):
+        if self.selected == True:#turn off scrolling if selected
+            return
         if(self.selection < len(self.options) - 1):
             self.selection += 1
     def scroll_left(self):
+        if self.selected == True:#turn off scrolling if selected
+            return
         if(self.selection > 0):
             self.selection -= 1
 
