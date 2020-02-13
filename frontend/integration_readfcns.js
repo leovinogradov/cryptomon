@@ -17,10 +17,6 @@ const resp = await rpc.get_table_rows({
   console.log(resp.rows);
 }
 
-async function getCryptomon(){
-
-}
-
 require('yargs')
   .command('getplayer', "Retrieve player info from blockchain", {
       account: {
@@ -83,19 +79,23 @@ require('yargs')
           reverse: false,
           show_payer: false,
         });
-        resp.rows[0].cryptomon_indexes.forEach( async (element) => {
-          console.log(await rpc.get_table_rows({
+        resp.rows[0].cryptomons = new Array();
+        var i;
+        for(i = 0; i < resp.rows[0].cryptomon_indexes.length; i++){
+          let resp_c = await rpc.get_table_rows({
             json: true,
             code: 'cryptomon',
             scope: 'cryptomon',
             table: 'cryptomons',
-            lower_bound: element,
+            lower_bound: resp.rows[0].cryptomon_indexes[i],
             limit: 1,
             reverse: false,
             show_payer: false,
-          }));
-        })
-        console.log(resp.rows[0]);
+          });
+          resp.rows[0].cryptomons.push(resp_c.rows[0]);
+        }
+          console.log(resp.rows[0]);
+
   })
   .help()
   .alias('help', 'h')
