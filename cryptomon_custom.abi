@@ -1,0 +1,540 @@
+{
+  "version": "eosio::abi/1.0",
+  "types": [],
+  "structs": [
+    {
+      "name": "upsertplayer",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "s",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "createmon",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "deleteplayer",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "deletemon",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "listmon",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "price",
+          "type": "asset"
+        },
+        {
+          "name": "delay",
+          "type": "uint64"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "delistmon",
+      "base": "",
+      "fields": [
+        {
+          "name": "c_index",
+          "type": "uint64"
+        },
+        {
+          "name": "acc",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "purchasemon",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "c_index",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "trademon",
+      "base": "",
+      "fields": [
+        {
+          "name": "account_one",
+          "type": "name"
+        },
+        {
+          "name": "account_two",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "canceltrade",
+      "base": "",
+      "fields": [
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "inittrade",
+      "base": "",
+      "fields": [
+        {
+          "name": "account_one",
+          "type": "name"
+        },
+        {
+          "name": "account_two",
+          "type": "name"
+        },
+        {
+          "name": "price",
+          "type": "asset"
+        },
+        {
+          "name": "swap",
+          "type": "bool"
+        },
+        {
+          "name": "duration",
+          "type": "uint64"
+        },
+        {
+          "name": "c1",
+          "type": "uint64"
+        },
+        {
+          "name": "c2",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "accepttrade",
+      "base": "",
+      "fields": [
+        {
+          "name": "account",
+          "type": "name"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "setname",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "s",
+          "type": "string"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "interact",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "itemapply",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "item",
+          "type": "uint8"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "itemacquire",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        }
+      ]
+    },
+    {
+      "name": "itembuy",
+      "base": "",
+      "fields": [
+        {
+          "name": "account",
+          "type": "name"
+        },
+        {
+          "name": "select",
+          "type": "uint8"
+        },
+        {
+          "name": "amount",
+          "type": "asset"
+        }
+      ]
+    }
+    {
+      "name": "itemdelete",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "item",
+          "type": "uint8"
+        }
+      ]
+    },
+    {
+      "name": "monversion",
+      "base": "",
+      "fields": []
+    },
+    {
+      "name": "withdraw",
+      "base": "",
+      "fields": [
+        {
+          "name": "acc",
+          "type": "name"
+        },
+        {
+          "name": "amount",
+          "type": "asset"
+        }
+      ]
+    },
+    {
+      "name": "player",
+      "base": "",
+      "fields": [
+        {
+          "name": "key",
+          "type": "name"
+        },
+        {
+          "name": "inventory",
+          "type": "uint8[]"
+        },
+        {
+          "name": "playerName",
+          "type": "string"
+        },
+        {
+          "name": "funds",
+          "type": "asset"
+        },
+        {
+          "name": "cryptomon_indexes",
+          "type": "uint64[]"
+        },
+        {
+          "name": "has_cryptomon",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "marketplace",
+      "base": "",
+      "fields": [
+        {
+          "name": "key",
+          "type": "uint64"
+        },
+        {
+          "name": "seller",
+          "type": "name"
+        },
+        {
+          "name": "cost",
+          "type": "asset"
+        }
+      ]
+    },
+    {
+      "name": "cryptomons",
+      "base": "",
+      "fields": [
+        {
+          "name": "key",
+          "type": "uint64"
+        },
+        {
+          "name": "happiness",
+          "type": "uint8"
+        },
+        {
+          "name": "health",
+          "type": "uint8"
+        },
+        {
+          "name": "hunger",
+          "type": "uint8"
+        },
+        {
+          "name": "torso",
+          "type": "uint8"
+        },
+        {
+          "name": "head",
+          "type": "uint8"
+        },
+        {
+          "name": "type",
+          "type": "uint8"
+        },
+        {
+          "name": "start",
+          "type": "time_point"
+        },
+        {
+          "name": "current",
+          "type": "time_point"
+        },
+        {
+          "name": "mon_name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "transact",
+      "base": "",
+      "fields": [
+        {
+          "name": "account_one",
+          "type": "name"
+        },
+        {
+          "name": "account_two",
+          "type": "name"
+        },
+        {
+          "name": "cryptomon_index",
+          "type": "uint64"
+        },
+        {
+          "name": "cryptomon_index2",
+          "type": "uint64"
+        },
+        {
+          "name": "swap",
+          "type": "bool"
+        },
+        {
+          "name": "price",
+          "type": "asset"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "upsertplayer",
+      "type": "upsertplayer",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "createmon",
+      "type": "createmon",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "deleteplayer",
+      "type": "deleteplayer",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "deletemon",
+      "type": "deletemon",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "listmon",
+      "type": "listmon",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "delistmon",
+      "type": "delistmon",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "purchasemon",
+      "type": "purchasemon",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "trademon",
+      "type": "trademon",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "inittrade",
+      "type": "inittrade",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "canceltrade",
+      "type": "canceltrade",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "accepttrade",
+      "type": "accepttrade",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "setname",
+      "type": "setname",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "interact",
+      "type": "interact",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "itemapply",
+      "type": "itemapply",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "itemacquire",
+      "type": "itemacquire",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "itembuy",
+      "type": "itembuy",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "itemdelete",
+      "type": "itemdelete",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "monversion",
+      "type": "monversion",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "withdraw",
+      "type": "withdraw",
+      "ricardian_contract": ""
+    }
+  ],
+  "tables": [
+    {
+      "name": "players",
+      "type": "player",
+      "index_type": "i64",
+      "key_names": ["primary_key"],
+      "key_types": ["name"]
+    },
+    {
+      "name": "market",
+      "type": "marketplace",
+      "index_type": "i64",
+      "key_names": ["primary_key"],
+      "key_types": ["uint64"]
+    },
+    {
+      "name": "cryptomons",
+      "type": "cryptomons",
+      "index_type": "i64",
+      "key_names": ["primary_key"],
+      "key_types": ["uint64"]
+    },
+    {
+      "name": "transacts",
+      "type": "transact",
+      "index_type": "i64",
+      "key_names": ["primary_key"],
+      "key_types": ["uint64"]
+    }
+  ],
+  "ricardian_clauses": [],
+  "abi_extensions": []
+}

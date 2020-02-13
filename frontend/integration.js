@@ -8,8 +8,6 @@ const signatureProvider = new JsSignatureProvider(["5KKxRW5DT54XjzApDrG9XsHqWNsJ
 const rpc = new JsonRpc('http://127.0.0.1:8888', { fetch }); //required to read blockchain state
 const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
 
-//console.log(process.argv);
-//var myArgs = process.argv.slice(2);
 require('yargs')
   .command('createmon', "Create a cryptomon for player", {
       account: {
