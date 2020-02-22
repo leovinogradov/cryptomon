@@ -195,5 +195,5 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     t_data transact_table;
 
   private:
-    const eosio::symbol currency_symbol = eosio::symbol("EOS", 4);
+    const eosio::symbol currency_symbol = eosio::symbol("TNT", 4);
   };
