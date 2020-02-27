@@ -1,23 +1,61 @@
 # Approach 1 would be to use the Naked library. However, lets try without external libraries first
-
 import subprocess
+import json
 
-# @Input account: string
-def createmon(account):
+# account is account name, such as "alice"
+def getplayer(account):
     try:
-        c = ["node", "integration.js", "createmon"]
-        c.append("--account="+account) # command is separated for readablity
-        return subprocess.check_output(c)
+        c = ["node", "integration_readfcns.js", "getplayer", "--account"]
+        c.append(account) # command is separated for readablity
+
+        out = subprocess.check_output(c).decode("utf-8")
+        return json.loads(out)
     except Exception as e:
         print(e)
         return -1;
 
-def deletemon(account, index):
+# get all info about player and their cryptomons
+def getallinfo(account):
     try:
-        c = ["node", "integration.js", "deletemon"]
-        c.append("--account="+account)
-        c.append("--index="+index)
-        return subprocess.check_output(c)
+        c = ["node", "integration_readfcns.js", "getallinfo", "--account"]
+        c.append(account) # command is separated for readablity
+
+        out = subprocess.check_output(c).decode("utf-8")
+        return json.loads(out)
+    except Exception as e:
+        print(e)
+        return -1;
+
+# get cryptomon info by index
+def getcryptomon(index):
+    try:
+        c = ["node", "integration_readfcns.js", "getcryptomon", "--index"]
+        c.append(str(index)) # command is separated for readablity
+
+        out = subprocess.check_output(c).decode("utf-8")
+        return json.loads(out)
+    except Exception as e:
+        print(e)
+        return -1;
+
+
+# account: string
+def createmon(account: str):
+    try:
+        c = ["node", "integration.js", "createmon", "--account"]
+        c.append(account) # command is separated for readablity
+        return subprocess.check_output(c).decode("utf-8")
+    except Exception as e:
+        print(e)
+        return -1;
+
+def deletemon(account: str, index: int):
+    try:
+        c = ["node", "integration.js", "deletemon", "--account"]
+        c.append(account)
+        c.append("--index")
+        c.append(str(index))
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
@@ -26,107 +64,107 @@ def deletemon(account, index):
 # asset = the price of the cryptomon in the format [asset type]
 # delay = duration of sale
 # index = index of Cryptomon
-def listmon(account: string, asset: string, delay: number, index: number):
+def listmon(account: str, asset: str, delay: int, index: int):
     try:
-        c = ["node", "integration.js", "listmon"]
-        c.append("--account="+account)
-        c.append("--asset="+asset)
-        c.append("--delay="+delay)
-        c.append("--index="+index)
-        return subprocess.check_output(c)
+        c = ["node", "integration.js", "listmon", "--account"]
+        c.append(account)
+        c.append("--asset " + asset)
+        c.append("--delay " + str(delay))
+        c.append("--index " + str(index))
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
 
 # Remove cryptomon from trade table
-def delistmon(account: string, index: number):
+def delistmon(account, index):
     try:
         c = ["node", "integration.js", "delistmon"]
-        c.append("--account="+account)
-        c.append("--index="+index)
-        return subprocess.check_output(c)
+        c.append("--account"+account)
+        c.append("--index"+str(index))
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
 
-def purchasemon(account: string, index: number):
+def purchasemon(account, index):
     try:
         c = ["node", "integration.js", "purchasemon"]
-        c.append("--account="+account)
-        c.append("--index="+index)
-        return subprocess.check_output(c)
+        c.append("--account "+ account)
+        c.append("--index " + str(index))
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
 
-def accepttrade(account: string, index: number):
+def accepttrade(account, index):
     try:
         c = ["node", "integration.js", "accepttrade"]
-        c.append("--account="+account)
-        c.append("--index="+index)
-        return subprocess.check_output(c)
+        c.append("-account " + account)
+        c.append("--index "+ str(index))
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
 
-def inittrade(account1: string, account2: string, price: string, swap: boolean, duration: number, c1: number, c2: number):
+def inittrade(account1: str, account2, price, swap, duration, c1, c2):
     try:
         c = ["node", "integration.js", "inittrade"]
-        c.append("--account1="+account1)
-        c.append("--account2="+account2)
-        c.append("--price="+price)
-        c.append("--swap="+swap)
-        c.append("--duration="+duration)
-        c.append("--c1="+c1)
-        c.append("--c2="+c2)
-        return subprocess.check_output(c)
+        c.append("--account1 "+account1)
+        c.append("--account2 "+account2)
+        c.append("--price "+ price)
+        c.append("--swap "+ swap)
+        c.append("--duration "+ str(duration))
+        c.append("--c1 " + str(c1))
+        c.append("--c2 " + str(c2))
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
 
-def canceltrade(account: string, index: number):
+def canceltrade(account, index):
     try:
         c = ["node", "integration.js", "canceltrade"]
-        c.append("--account="+account)
-        c.append("--index="+index)
-        return subprocess.check_output(c)
+        c.append("--account " +account)
+        c.append("--index " + str(index))
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
 
 
 # set name of cryptomon
-def setname(account: string, name: string, index: number):
+def setname(account: str, name: str, index: int):
     try:
         c = ["node", "integration.js", "setname"]
-        c.append("--account="+account)
-        c.append("--name="+name)
-        c.append("--index="+index)
-        return subprocess.check_output(c)
+        c.append("--account " + account)
+        c.append("--name " + name)
+        c.append("--index " + index)
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
 
 # apply item in player inventory to cryptomon
-def itemapply(account: string, item: number, index: number):
+def itemapply(account: str, item: int, index: int):
     try:
         c = ["node", "integration.js", "itemapply"]
-        c.append("--account="+account)
-        c.append("--item="+item)
-        c.append("--index="+index)
-        return subprocess.check_output(c)
+        c.append("--account " + account)
+        c.append("--item " + str(item))
+        c.append("--index " + str(index))
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
 
 # create player for account
 # name = name of player
-def upsertplayer(account: string, name: string):
+def upsertplayer(account: str, name: str):
     try:
         c = ["node", "integration.js", "upsertplayer"]
-        c.append("--account="+account)
-        c.append("--s="+name)
-        return subprocess.check_output(c)
+        c.append("--account " + account)
+        c.append("--s " + name)
+        return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
         return -1;
@@ -140,4 +178,6 @@ def test():
 if __name__ == "__main__":
     print('TEST:')
     # print(test())
-    print(createmon("test"))
+    res = createmon("alice")
+    print(type(res))
+    print(res)

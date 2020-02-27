@@ -1,4 +1,5 @@
 .DS_Store
+nodeos.log
 backend/nodeos.log
 frontend/nodeos.log
 frontend/node_modules

@@ -4,8 +4,11 @@ const fetch = require('node-fetch'); //node only
 const { TextDecoder, TextEncoder } = require('util'); //node only
 //const privateKeys = [privateKey1];
 //const privateKeys = ['EOS5LabEzJh4sStF5TyLGg718vs52dMyHhU978UUFvWKG9V2PuWPf'];
-const signatureProvider = new JsSignatureProvider(["5KKxRW5DT54XjzApDrG9XsHqWNsJqVSEN43axeuX6AQ3o96PuEp"]);
-const rpc = new JsonRpc('http://127.0.0.1:8888', { fetch }); //required to read blockchain state
+// const signatureProvider = new JsSignatureProvider(["5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"]);
+
+const signatureProvider = new JsSignatureProvider(["5JP6Vr9KB7bwJGG2QfjackhaWCw5eH1J1QnVdJqBAU23RcJVAbf"]);
+
+const rpc = new JsonRpc('https://api.testnet.eos.io', { fetch }); //required to read blockchain state
 const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
 
 require('yargs')
@@ -20,7 +23,7 @@ require('yargs')
       async function (argv) {
         await api.transact({
          actions: [{
-           account: 'cryptomon',
+           account: 'mppvvumgroiw',
            name: 'createmon',
            authorization: [{
              actor: argv.account,
@@ -52,7 +55,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'deletemon',
        authorization: [{
          actor: argv.account,
@@ -97,7 +100,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'listmon',
        authorization: [{
          actor: argv.account,
@@ -132,7 +135,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'delistmon',
        authorization: [{
          actor: argv.account,
@@ -165,7 +168,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'purchasemon',
        authorization: [{
          actor: argv.account,
@@ -198,7 +201,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'accepttrade',
        authorization: [{
          actor: argv.account,
@@ -237,7 +240,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'setname',
        authorization: [{
          actor: argv.account,
@@ -271,7 +274,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'interact',
        authorization: [{
          actor: argv.account,
@@ -310,7 +313,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'itemapply',
        authorization: [{
          actor: argv.account,
@@ -338,7 +341,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'itemacquire',
        authorization: [{
          actor: argv.account,
@@ -370,7 +373,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'itemdelete',
        authorization: [{
          actor: argv.account,
@@ -403,7 +406,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'withdraw',
        authorization: [{
          actor: argv.account,
@@ -436,7 +439,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'canceltrade',
        authorization: [{
          actor: argv.account,
@@ -497,7 +500,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'inittrade',
        authorization: [{
          actor: argv.account1,
@@ -535,7 +538,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'upsertplayer',
        authorization: [{
          actor: argv.account,
@@ -562,7 +565,7 @@ require('yargs')
   async function (argv) {
     await api.transact({
      actions: [{
-       account: 'cryptomon',
+       account: 'mppvvumgroiw',
        name: 'deleteplayer',
        authorization: [{
          actor: argv.account,
@@ -570,6 +573,47 @@ require('yargs')
        }],
        data: {
          acc: argv.account
+       },
+     }]
+    }, {
+     blocksBehind: 3,
+     expireSeconds: 30,
+    });
+  })
+  .command('transfer', 'Transfer tokens from account to smart-contract account', {
+      account: {
+        describe: 'the account associated with player',
+        alias: 'a',
+        type: 'string',
+        demandOption: true,
+      },
+      quantity: {
+        describe: 'the quantity to transfer in the format X.XXXX TNT',
+        alias: 'q',
+        type: 'string',
+        demandOption: true,
+      },
+      memo: {
+        describe: "memo or message with transfer",
+        alias: 'm',
+        type: 'string',
+        demandOption: false,
+      }
+  },
+  async function (argv) {
+    await api.transact({
+     actions: [{
+       account: 'eosio.token',
+       name: 'transfer',
+       authorization: [{
+         actor: argv.account,
+         permission: 'active',
+       }],
+       data: {
+         from: argv.account,
+         to: 'mppvvumgroiw',
+         quantity: argv.quantity,
+         memo: argv.memo
        },
      }]
     }, {

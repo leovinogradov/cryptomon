@@ -1,9 +1,12 @@
 import pygame
 import os
 from time import sleep
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO #Comment this line back in if Physical Buttons are attatched
 from Menus import *
 from Action import *
+from Mon import *
+
+path = "/home/pi/Desktop/Pygame/Cryptomon/cryptomon/assets/"
 
 class PygameView(object):
 
@@ -11,6 +14,7 @@ class PygameView(object):
     def __init__(self, width=480, height=320, fps=30):
         """Initialize GPIO pins
         """
+        """Comment this block back in if Physical Buttons are attatched
         self.button_map = (17,27,22)
         GPIO.setmode(GPIO.BCM)
         for k in self.button_map:
@@ -20,7 +24,7 @@ class PygameView(object):
         GPIO.add_event_detect(self.button_map[0], GPIO.FALLING, callback=self.right_button,bouncetime=200)
         GPIO.add_event_detect(self.button_map[1], GPIO.FALLING, callback=self.down_button,bouncetime=200)
         GPIO.add_event_detect(self.button_map[2], GPIO.FALLING, callback=self.left_button,bouncetime=200)
-
+        """
         """Initialize pygame, window, background, font,...
         """
         pygame.init()
@@ -33,43 +37,57 @@ class PygameView(object):
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.playtime = 0.0
-        self.font = pygame.font.SysFont('mono', 20, bold=True)
+        self.font = pygame.font.SysFont('mono', 15, bold=True)
 
         #undetermined
-        #self.myMons = []
+        self.my_mons = []
         #self.myFood = []
+        mon1 = Mon(self,0b01000000)
+        mon2 = Mon(self,0b10110000)
+        print("Mon 1:")
+        print(mon1.head_image_name)
+        print(mon1.body_image_name)
+        print("Mon 2:")
+        print(mon2.head_image_name)
+        print(mon2.body_image_name)
+        self.my_mons.append(mon1)
+        self.my_mons.append(mon2)
+
+        self.primary_mon = None
+        self.primary_food = None
+        self.primary_friend = None
 
         self.menu = Main_Menu(self)
 
     def run(self):
-        running = True
-        while running:
+        self.running = True
+        while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        running = False
+                        self.running = False
                     elif event.key == pygame.K_RIGHT:
-                        self.right_button(self.button_map[0])
+                        self.right_button(0)
                     elif event.key == pygame.K_DOWN:
-                        self.down_button(self.button_map[1])
+                        self.down_button(0)
                     elif event.key == pygame.K_LEFT:
-                        self.left_button(self.button_map[2])
+                        self.left_button(0)
                 elif event.type == pygame.MOUSEBUTTONUP:
                     x, y = pygame.mouse.get_pos()
                     if x > self.width*2/3:
-                        self.right_button(self.button_map[0])
+                        self.right_button(0)
                     elif x > self.width/3:
-                        self.down_button(self.button_map[1])
+                        self.down_button(0)
                     else:
-                        self.left_button(self.button_map[2])
+                        self.left_button(0)
             self.menu.draw()
             pygame.display.flip()
             self.screen.blit(self.background, (0, 0))
 
         pygame.quit()
-                
+
     def right_button(self,callback_type):
         self.menu.right_button()
     def down_button(self,callback_type):
@@ -92,9 +110,13 @@ class PygameView(object):
             self.menu = Friends_Menu(self)
         elif action == Action.GO_TO_TRADE_MENU:
             self.menu = Trade_Menu(self)
+        elif action == Action.GO_TO_TRADE_FRIEND_MENU:
+            self.menu = Trade_Friend_Menu(self)
         elif action == Action.GO_TO_PLAY_MENU:
             self.menu = Play_Menu(self)
-    
+        elif action == Action.EXIT_APP:
+            self.running = False
+
     def draw_FPS(self):
         milliseconds = self.clock.tick(self.fps)
         self.playtime += milliseconds / 1000.0
@@ -110,8 +132,6 @@ class PygameView(object):
         surface = self.font.render(text, True, (0, 255, 0))
         # // makes integer division in python3
         self.screen.blit(surface, ((self.width - fw) // 2, (self.height - fh) // 2))
-    def deletethis(self):
-        print("deletethis")
 ####
 
 if __name__ == '__main__':
