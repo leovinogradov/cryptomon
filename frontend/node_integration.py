@@ -179,6 +179,6 @@ if __name__ == "__main__":
     print()
     #print('TEST:')
     # print(test())
-    #res = getallinfo("zvnxqtokmcqs")
+    res = getallinfo("zvnxqtokmcqs")
     #print(type(res))
-    #print(res)
+    print(res)

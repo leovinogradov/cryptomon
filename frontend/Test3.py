@@ -5,8 +5,7 @@ from time import sleep
 from Menus import *
 from Action import *
 from Mon import *
-
-path = "/home/pi/Desktop/Pygame/Cryptomon/cryptomon/assets/"
+from node_integration import *
 
 class PygameView(object):
 
@@ -14,7 +13,7 @@ class PygameView(object):
     def __init__(self, width=480, height=320, fps=30):
         """Initialize GPIO pins
         """
-        """Comment this block back in if Physical Buttons are attatched
+        """#Comment this block back in if Physical Buttons are attatched
         self.button_map = (17,27,22)
         GPIO.setmode(GPIO.BCM)
         for k in self.button_map:
@@ -39,23 +38,18 @@ class PygameView(object):
         self.playtime = 0.0
         self.font = pygame.font.SysFont('mono', 15, bold=True)
 
-        #undetermined
-        self.my_mons = []
-        #self.myFood = []
-        mon1 = Mon(self,0b01000000)
-        mon2 = Mon(self,0b10110000)
-        print("Mon 1:")
-        print(mon1.head_image_name)
-        print(mon1.body_image_name)
-        print("Mon 2:")
-        print(mon2.head_image_name)
-        print(mon2.body_image_name)
-        self.my_mons.append(mon1)
-        self.my_mons.append(mon2)
+        dir_path = os.path.dirname(__file__)
+        rel_path = "/assets/"
+        self.path = os.path.join(dir_path+rel_path)
+
+        self.my_index = "zvnxqtokmcqs"
+        self.my_info_update()
+        self.myFriends = ["ingkdmmngzgi"]#TODO add friends list
 
         self.primary_mon = None
         self.primary_food = None
         self.primary_friend = None
+        self.primary_friend_mon = None
 
         self.menu = Main_Menu(self)
 
@@ -94,6 +88,17 @@ class PygameView(object):
         self.menu.down_button()
     def left_button(self,callback_type):
         self.menu.left_button()
+        
+    def my_info_update(self):
+        info = getallinfo(self.my_index)
+        self.my_name = info['playerName']
+        funds, tnt = info['funds'].split()
+        self.funds = float(funds)
+        self.my_mons = []
+        cryptomons = info['cryptomons']
+        for i in cryptomons:
+            self.my_mons.append(Mon(self,i))
+        self.myFood = info['inventory']
 
     def change_menu(self, action):
         if action == Action.GO_TO_MAIN_MENU:
