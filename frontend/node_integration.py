@@ -38,6 +38,48 @@ def getcryptomon(index):
         print(e)
         return -1;
 
+# get trades offered to a Player by account name
+def getofferredtrades(account: str):
+    try:
+        c = ["node", "integration_readfcns.js", "getofferedtrades", "--account"]
+        c.append(account) # command is separated for readablity
+
+        out = subprocess.check_output(c).decode("utf-8")
+        return json.loads(out)
+    except Exception as e:
+        print(e)
+        return -1;
+
+# get cryptomon listings in the transact table, for now 10 listings will show
+def getlistings():
+    try:
+        c = ["node", "integration_readfcns.js", "getlistings"]
+        out = subprocess.check_output(c).decode("utf-8")
+        return json.loads(out)
+    except Exception as e:
+        print(e)
+        return -1;
+
+# get all transact events including trades and listings of a Player by their account name
+def getyourtransacts(account: str):
+    try:
+        c = ["node", "integration_readfcns.js", "getyourtransacts", "--account"]
+        c.append(account) # command is separated for readablity
+        out = subprocess.check_output(c).decode("utf-8")
+        return json.loads(out)
+    except Exception as e:
+        print(e)
+        return -1;
+
+# get all entries in the transacts table
+def gettransacts():
+    try:
+        c = ["node", "integration_readfcns.js", "gettransacts"]
+        out = subprocess.check_output(c).decode("utf-8")
+        return json.loads(out)
+    except Exception as e:
+        print(e)
+        return -1;
 
 # account: string
 def createmon(account: str):
@@ -64,12 +106,11 @@ def deletemon(account: str, index: int):
 # asset = the price of the cryptomon in the format [asset type]
 # delay = duration of sale
 # index = index of Cryptomon
-def listmon(account: str, asset: str, delay: int, index: int):
+def listmon(account: str, asset: str, index: int):
     try:
         c = ["node", "integration.js", "listmon", "--account"]
         c.append(account)
         c.append("--asset " + asset)
-        c.append("--delay " + str(delay))
         c.append("--index " + str(index))
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
@@ -107,14 +148,13 @@ def accepttrade(account, index):
         print(e)
         return -1;
 
-def inittrade(account1: str, account2, price, swap, duration, c1, c2):
+def inittrade(account1: str, account2, price, swap, c1, c2):
     try:
         c = ["node", "integration.js", "inittrade"]
         c.append("--account1 "+account1)
         c.append("--account2 "+account2)
         c.append("--price "+ price)
         c.append("--swap "+ swap)
-        c.append("--duration "+ str(duration))
         c.append("--c1 " + str(c1))
         c.append("--c2 " + str(c2))
         return subprocess.check_output(c).decode("utf-8")
