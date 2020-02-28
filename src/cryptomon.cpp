@@ -98,6 +98,7 @@ using eosio::contract;
     void cryptomon::deleteplayer(eosio::name acc){
       //require_auth(acc);
       auto player_iterator = player_table.find(acc.value);
+      auto player_entry = player_table.get(acc.value);
       eosio::check(player_iterator != player_table.end(), "Player does not exist");
 
       //auto c_index = player_table.get(acc.value).cryptomon_index; //delete player
@@ -107,6 +108,9 @@ using eosio::contract;
       }
 
       auto transact_iterator = transact_table.find(acc.value);
+      if(player_entry.funds.amount > 0){
+        eosio::action(eosio::permission_level{get_self(), "active"_n}, "eosio.token"_n, "transfer"_n, std::make_tuple(get_self(), acc, player_entry.funds, std::string("Withdrawing all funds!"))).send();
+      }
       player_table.erase(player_iterator);
 
       if(transact_iterator != transact_table.end()){ //if there is an entry in market, delete it
@@ -145,7 +149,7 @@ using eosio::contract;
       }
 
     [[eosio::action]]
-    void cryptomon::listmon(eosio::name acc, eosio::asset price, uint64_t delay, uint64_t cryptomon_index){
+    void cryptomon::listmon(eosio::name acc, eosio::asset price, uint64_t cryptomon_index){
       //require_auth(acc);
       auto player_iterator = player_table.find(acc.value);
       auto player_entry = player_table.get(acc.value);
@@ -168,10 +172,6 @@ using eosio::contract;
               row.price = price;
               row.swap = false;
             });
-            eosio::transaction t{};
-            t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "delistmon"_n, std::make_tuple(cryptomon_index));
-            t.delay_sec = delay;
-            t.send(acc.value, acc);
           }
           else{
             eosio::print("Cannot sell Cryptomon that you do not possess!");
@@ -258,7 +258,7 @@ using eosio::contract;
     }
 
     [[eosio::action]]
-    void cryptomon::inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t duration, uint64_t c1 = 0, uint64_t c2 = 0) {
+    void cryptomon::inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t c1 = 0, uint64_t c2 = 0) {
       //require_auth(account_one);
       auto account_one_itr = player_table.find(account_one.value);
       auto account_two_itr = player_table.find(account_two.value);
@@ -297,14 +297,8 @@ using eosio::contract;
                 }
                 entry.price = price;
               });
-              eosio::transaction t{}; //delete trade after duration period
-              //t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
-              t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(c2));
-              t.delay_sec = duration;
-              t.send(account_one.value, account_one);
             }
           else{
-            eosio::cancel_deferred(account_one.value);
             transact_table.modify(trade_itr, account_one, [&](auto &row){
               if(findItem<uint64_t>(c2, entry_account_two.cryptomon_indexes) > -1){
                 row.account_two = account_two;
@@ -330,11 +324,6 @@ using eosio::contract;
                 row.cryptomon_index = 0;
               }
             });
-            eosio::transaction t{}; //delete trade after duration period
-            //t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
-            t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(c2));
-            t.delay_sec = duration;
-            t.send(account_one.value, account_one);
               }
             }
           else{
@@ -561,6 +550,7 @@ using eosio::contract;
       eosio::check(amount <= player_entry.funds, "Do not have enough funds for the amount chosen!");
       switch(select){
         case 0:
+
         break;
         case 1:
         break;

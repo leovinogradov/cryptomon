@@ -46,7 +46,7 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     void deletemon(eosio::name acc, uint64_t cryptomon_index);
 
     [[eosio::action]]
-    void listmon(eosio::name acc, eosio::asset price, uint64_t delay, uint64_t cryptomon_index);
+    void listmon(eosio::name acc, eosio::asset price, uint64_t cryptomon_index);
 
     [[eosio::action]]
     void delistmon(eosio::name acc, uint64_t c_index);
@@ -84,7 +84,7 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     void canceltrade(eosio::name account, uint64_t cryptomon_index);
 
     [[eosio::action]]
-    void inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t duration, uint64_t c1, uint64_t c2);
+    void inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t c1, uint64_t c2);
 
     [[eosio::action]]
     void itembuy(eosio::name account, uint8_t select, eosio::asset amount);
@@ -130,6 +130,8 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
       uint64_t cryptomon_index2;
       bool swap;
       eosio::asset price;
+      uint64_t get_secondary_1() const { return account_one.value;}
+      uint64_t get_secondary_2() const { return account_two.value;}
       uint64_t primary_key() const { return cryptomon_index2; }
     };
 
@@ -146,13 +148,6 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
 
     };
 */
-    struct [[eosio::table]] marketplace{
-      uint64_t key;
-      eosio::name seller;
-      //uint64_t askingPrice;
-      eosio::asset cost;
-      uint64_t primary_key() const {return key; }
-    };
 
     struct [[eosio::table]] cryptomons{
       uint64_t key;
@@ -187,7 +182,7 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     typedef eosio::multi_index<"players"_n, player> p_data;
     //typedef eosio::multi_index<"market"_n, marketplace> m_data;
     typedef eosio::multi_index<"cryptomons"_n, cryptomons> c_data;
-    typedef eosio::multi_index<"transacts"_n, transact> t_data;
+    typedef eosio::multi_index<"transacts"_n,  transact, eosio::indexed_by<"accountone"_n, eosio::const_mem_fun<transact, uint64_t, &transact::get_secondary_1>>, eosio::indexed_by<"accounttwo"_n, eosio::const_mem_fun<transact, uint64_t, &transact::get_secondary_2>>> t_data;
 
     c_data mons_table;
     p_data player_table;
@@ -196,4 +191,20 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
 
   private:
     const eosio::symbol currency_symbol = eosio::symbol("TNT", 4);
+    uint128_t sender_id = 0;
   };
+
+  /* deferred transactions
+  //eosio::transaction t{}; //delete trade after duration period
+  //t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(entry_account_one.cryptomon_index));
+  //t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "canceltrade"_n, std::make_tuple(c2));
+  //t.delay_sec = duration;
+  //t.send(account_one.value, account_one);
+
+  //eosio::transaction t{};
+  //t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "delistmon"_n, std::make_tuple(cryptomon_index));
+  //t.delay_sec = delay;
+  //t.send(cryptomon_index, acc);
+  //t.send(acc.value, acc);
+
+  */
