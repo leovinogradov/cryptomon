@@ -209,6 +209,18 @@ def upsertplayer(account: str, name: str):
         print(e)
         return -1;
 
+# transfer funds from account to contract for use in-game
+def transfer(account: str, amount: str, memo = ""):
+    try:
+        c = ["node", "integration.js", "transfer"]
+        c.append("--account " + account)
+        c.append("--quantity " + amount)
+        c.append("--memo" + memo)
+        return subprocess.check_output(c).decode("utf-8")
+    except Exception as e:
+        print(e)
+        return -1;
+
 def test():
     try:
         return subprocess.check_output(["node", "integration.js", "createmon"])
