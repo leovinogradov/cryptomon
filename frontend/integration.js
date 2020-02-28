@@ -2,12 +2,9 @@ const { Api, JsonRpc } = require('eosjs');
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig');  // development only
 const fetch = require('node-fetch'); //node only
 const { TextDecoder, TextEncoder } = require('util'); //node only
-//const privateKeys = [privateKey1];
-//const privateKeys = ['EOS5LabEzJh4sStF5TyLGg718vs52dMyHhU978UUFvWKG9V2PuWPf'];
-// const signatureProvider = new JsSignatureProvider(["5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"]);
-
+//const signatureProvider = new JsSignatureProvider(["5KKxRW5DT54XjzApDrG9XsHqWNsJqVSEN43axeuX6AQ3o96PuEp"]);
 const signatureProvider = new JsSignatureProvider(["5JP6Vr9KB7bwJGG2QfjackhaWCw5eH1J1QnVdJqBAU23RcJVAbf"]);
-
+//const rpc = new JsonRpc('http://127.0.0.1:8888', { fetch }); //required to read blockchain state
 const rpc = new JsonRpc('https://api.testnet.eos.io', { fetch }); //required to read blockchain state
 const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() }); //required to submit transactions
 
@@ -84,12 +81,6 @@ require('yargs')
         type: 'string',
         demandOption: true,
       },
-      delay: {
-        describe: 'duration of sale',
-        alias: 'd',
-        type: 'number',
-        demandOption: true,
-      },
       index: {
         describe: 'the index of the cryptomon',
         alias: 'i',
@@ -109,7 +100,6 @@ require('yargs')
        data: {
          acc: argv.account,
          price: argv.asset,
-         delay: argv.delay,
          cryptomon_index: argv.index
        },
      }]
@@ -480,12 +470,6 @@ require('yargs')
         type: 'boolean',
         demandOption: true,
       },
-      duration: {
-        describe: 'duration of trade event',
-        alias: 'd',
-        type: 'number',
-        demandOption: true
-      },
       c1: {
         describe: 'cryptomon offered by initiator, if any',
         type: 'number',
@@ -511,7 +495,6 @@ require('yargs')
          account_two: argv.account2,
          price: argv.price,
          swap: argv.swap,
-         duration: argv.duration,
          c1: argv.c1,
          c2: argv.c2
        },
@@ -630,7 +613,7 @@ require('yargs')
 (async () => {
   await api.transact({
    actions: [{
-     account: 'cryptomon',
+     account: 'mppvvumgroiw',
      name: 'createmon',
      authorization: [{
        actor: 'alice',
