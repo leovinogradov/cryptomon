@@ -63,10 +63,6 @@
           "type": "asset"
         },
         {
-          "name": "delay",
-          "type": "uint64"
-        },
-        {
           "name": "cryptomon_index",
           "type": "uint64"
         }
@@ -143,10 +139,6 @@
         {
           "name": "swap",
           "type": "bool"
-        },
-        {
-          "name": "duration",
-          "type": "uint64"
         },
         {
           "name": "c1",
@@ -310,24 +302,6 @@
         {
           "name": "has_cryptomon",
           "type": "bool"
-        }
-      ]
-    },
-    {
-      "name": "marketplace",
-      "base": "",
-      "fields": [
-        {
-          "name": "key",
-          "type": "uint64"
-        },
-        {
-          "name": "seller",
-          "type": "name"
-        },
-        {
-          "name": "cost",
-          "type": "asset"
         }
       ]
     },
@@ -514,13 +488,6 @@
       "key_types": ["name"]
     },
     {
-      "name": "market",
-      "type": "marketplace",
-      "index_type": "i64",
-      "key_names": ["primary_key"],
-      "key_types": ["uint64"]
-    },
-    {
       "name": "cryptomons",
       "type": "cryptomons",
       "index_type": "i64",
@@ -531,8 +498,8 @@
       "name": "transacts",
       "type": "transact",
       "index_type": "i64",
-      "key_names": ["primary_key"],
-      "key_types": ["uint64"]
+      "key_names": ["primary_key", "accountone", "accounttwo"],
+      "key_types": ["uint64", "name", "name"]
     }
   ],
   "ricardian_clauses": [],

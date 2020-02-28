@@ -150,10 +150,6 @@
                     "type": "bool"
                 },
                 {
-                    "name": "duration",
-                    "type": "uint64"
-                },
-                {
                     "name": "c1",
                     "type": "uint64"
                 },
@@ -250,30 +246,8 @@
                     "type": "asset"
                 },
                 {
-                    "name": "delay",
-                    "type": "uint64"
-                },
-                {
                     "name": "cryptomon_index",
                     "type": "uint64"
-                }
-            ]
-        },
-        {
-            "name": "marketplace",
-            "base": "",
-            "fields": [
-                {
-                    "name": "key",
-                    "type": "uint64"
-                },
-                {
-                    "name": "seller",
-                    "type": "name"
-                },
-                {
-                    "name": "cost",
-                    "type": "asset"
                 }
             ]
         },
@@ -499,13 +473,6 @@
         {
             "name": "cryptomons",
             "type": "cryptomons",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "marketplace",
-            "type": "marketplace",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
