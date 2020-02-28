@@ -176,8 +176,8 @@ def test():
         return -1;
 
 if __name__ == "__main__":
-    print('TEST:')
+    #print('TEST:')
     # print(test())
-    res = createmon("alice")
-    print(type(res))
-    print(res)
+    #res = getallinfo("zvnxqtokmcqs")
+    #print(type(res))
+    #print(res)
