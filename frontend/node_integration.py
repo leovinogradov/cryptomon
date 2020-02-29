@@ -259,6 +259,6 @@ if __name__ == "__main__":
     #print('TEST:')
     # print(test())
     #res = getallinfo("zvnxqtokmcqs")
-    res = canceltrade("zvnxqtokmcqs", 1)
+    #res = canceltrade("zvnxqtokmcqs", 1)
     #print(type(res))
-    print(res)
+    #print(res)
