@@ -131,6 +131,10 @@ using eosio::contract;
                 int location = findItem(cryptomon_index, row.cryptomon_indexes);
                 if(location > -1){
                   row.cryptomon_indexes.erase(row.cryptomon_indexes.begin() + location);
+                  auto transact_itr = transact_table.find(cryptomon_index);
+                  if(transact_itr != transact_table.end()){
+                    transact_table.erase(transact_itr);
+                  }
                 }
                 else{
                   eosio::print("Cannot delete Cryptomon that you do not possess!");
@@ -153,7 +157,7 @@ using eosio::contract;
       //require_auth(acc);
       auto player_iterator = player_table.find(acc.value);
       auto player_entry = player_table.get(acc.value);
-      auto trans_iterator = transact_table.find(acc.value);
+      auto trans_iterator = transact_table.find(cryptomon_index);
       if(player_iterator == player_table.end()){
         eosio::print("No record exists of this player!");
       }

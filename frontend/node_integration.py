@@ -110,8 +110,10 @@ def listmon(account: str, asset: str, index: int):
     try:
         c = ["node", "integration.js", "listmon", "--account"]
         c.append(account)
-        c.append("--asset " + asset)
-        c.append("--index " + str(index))
+        c.append("--asset")
+        c.append(asset)
+        c.append("--index")
+        c.append(str(index))
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -121,8 +123,10 @@ def listmon(account: str, asset: str, index: int):
 def delistmon(account, index):
     try:
         c = ["node", "integration.js", "delistmon"]
-        c.append("--account"+account)
-        c.append("--index"+str(index))
+        c.append("--account")
+        c.append(account)
+        c.append("--index")
+        c.append(str(index))
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -131,8 +135,10 @@ def delistmon(account, index):
 def purchasemon(account, index):
     try:
         c = ["node", "integration.js", "purchasemon"]
-        c.append("--account "+ account)
-        c.append("--index " + str(index))
+        c.append("--account")
+        c.append(account)
+        c.append("--index")
+        c.append(str(index))
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -141,8 +147,10 @@ def purchasemon(account, index):
 def accepttrade(account, index):
     try:
         c = ["node", "integration.js", "accepttrade"]
-        c.append("-account " + account)
-        c.append("--index "+ str(index))
+        c.append("--account")
+        c.append(account)
+        c.append("--index")
+        c.append(str(index))
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -151,12 +159,18 @@ def accepttrade(account, index):
 def inittrade(account1: str, account2, price, swap, c1, c2):
     try:
         c = ["node", "integration.js", "inittrade"]
-        c.append("--account1 "+account1)
-        c.append("--account2 "+account2)
-        c.append("--price "+ price)
-        c.append("--swap "+ swap)
-        c.append("--c1 " + str(c1))
-        c.append("--c2 " + str(c2))
+        c.append("--account1")
+        c.append(account1)
+        c.append("--account2")
+        c.append(account2)
+        c.append("--price")
+        c.append(price)
+        c.append("--swap")
+        c.append(swap)
+        c.append("--c1")
+        c.append(str(c1))
+        c.append("--c2")
+        c.append(str(c2))
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -165,8 +179,10 @@ def inittrade(account1: str, account2, price, swap, c1, c2):
 def canceltrade(account, index):
     try:
         c = ["node", "integration.js", "canceltrade"]
-        c.append("--account " +account)
-        c.append("--index " + str(index))
+        c.append("--account")
+        c.append(account)
+        c.append("--index")
+        c.append(str(index))
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -177,9 +193,12 @@ def canceltrade(account, index):
 def setname(account: str, name: str, index: int):
     try:
         c = ["node", "integration.js", "setname"]
-        c.append("--account " + account)
-        c.append("--name " + name)
-        c.append("--index " + index)
+        c.append("--account")
+        c.append(account)
+        c.append("--name")
+        c.append(name)
+        c.append("--index")
+        c.append(index)
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -189,9 +208,12 @@ def setname(account: str, name: str, index: int):
 def itemapply(account: str, item: int, index: int):
     try:
         c = ["node", "integration.js", "itemapply"]
-        c.append("--account " + account)
-        c.append("--item " + str(item))
-        c.append("--index " + str(index))
+        c.append("--account")
+        c.append(account)
+        c.append("--item")
+        c.append(str(item))
+        c.append("--index")
+        c.append(str(index))
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -202,8 +224,10 @@ def itemapply(account: str, item: int, index: int):
 def upsertplayer(account: str, name: str):
     try:
         c = ["node", "integration.js", "upsertplayer"]
-        c.append("--account " + account)
-        c.append("--s " + name)
+        c.append("--account")
+        c.append(account)
+        c.append("--s")
+        c.append(name)
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -213,9 +237,12 @@ def upsertplayer(account: str, name: str):
 def transfer(account: str, amount: str, memo = ""):
     try:
         c = ["node", "integration.js", "transfer"]
-        c.append("--account " + account)
-        c.append("--quantity " + amount)
-        c.append("--memo" + memo)
+        c.append("--account")
+        c.append(account)
+        c.append("--quantity")
+        c.append(amount)
+        c.append("--memo")
+        c.append(memo)
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -231,6 +258,7 @@ if __name__ == "__main__":
     print()
     #print('TEST:')
     # print(test())
-    res = getallinfo("zvnxqtokmcqs")
+    #res = getallinfo("zvnxqtokmcqs")
+    res = deletemon("zvnxqtokmcqs", 0)
     #print(type(res))
     print(res)
