@@ -191,13 +191,16 @@ using eosio::contract;
     }
 
     [[eosio::action]]
-    void cryptomon::delistmon(eosio::name acc, uint64_t c_index){
+    void cryptomon::delistmon(eosio::name acc, uint64_t cryptomon_index){
       //require_auth(acc);
 
-      auto iterator = transact_table.find(c_index);
-      eosio::check(iterator != transact_table.end(), "Cryptomon listing does not exist!");
-      eosio::check(transact_table.get(c_index).account_one == acc, "Cannot remove sell event that you did not initiate!");
-      transact_table.erase(iterator);
+      auto trans_itr = transact_table.find(cryptomon_index);
+      //eosio::check(iterator != transact_table.end(), "Cryptomon listing does not exist!");
+      eosio::check(transact_table.get(cryptomon_index).account_one == acc, "Cannot remove sell event that you did not initiate!");
+      if(trans_itr != transact_table.end() && acc == transact_table.get(cryptomon_index).account_one){
+        transact_table.erase(trans_itr);
+      }
+
     }
 
     [[eosio::action]]
@@ -245,7 +248,6 @@ using eosio::contract;
           });
         }
         eosio::action(eosio::permission_level{acc, "active"_n}, get_self(), "delistmon"_n, std::make_tuple(transact_entry.account_one, c_index)).send();
-        eosio::cancel_deferred(seller.value);
         //eosio::action(eosio::permission_level{acc, "active"_n}, "eosio.token"_n, "transfer"_n, std::make_tuple(acc, seller, buyer_iterator->funds, std::string("Transferring funds!"))).send();
       }
 

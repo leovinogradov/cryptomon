@@ -118,7 +118,7 @@ require('yargs')
       index: {
         describe: 'the index of the cryptomon',
         alias: 'i',
-        type: 'number',
+        type: 'string',
         demandOption: true,
     }
   },
@@ -133,7 +133,7 @@ require('yargs')
        }],
        data: {
          acc: argv.account,
-         c_index: argv.index
+         cryptomon_index: argv.index
        },
      }]
     }, {
@@ -422,7 +422,7 @@ require('yargs')
       index: {
         describe: 'the index of the cryptomon in trade consideration',
         alias: 'i',
-        type: 'number',
+        type: 'string',
         demandOption: true,
     }
   },

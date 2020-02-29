@@ -124,7 +124,7 @@
                     "type": "name"
                 },
                 {
-                    "name": "c_index",
+                    "name": "cryptomon_index",
                     "type": "uint64"
                 }
             ]

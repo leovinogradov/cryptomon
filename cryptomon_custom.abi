@@ -73,7 +73,7 @@
       "base": "",
       "fields": [
         {
-          "name": "c_index",
+          "name": "cryptomon_index",
           "type": "uint64"
         },
         {
@@ -114,6 +114,10 @@
       "name": "canceltrade",
       "base": "",
       "fields": [
+        {
+          "name": "account",
+          "type": "name"
+        },
         {
           "name": "cryptomon_index",
           "type": "uint64"

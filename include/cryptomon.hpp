@@ -49,7 +49,7 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     void listmon(eosio::name acc, eosio::asset price, uint64_t cryptomon_index);
 
     [[eosio::action]]
-    void delistmon(eosio::name acc, uint64_t c_index);
+    void delistmon(eosio::name acc, uint64_t cryptomon_index);
 
     [[eosio::action]]
     void purchasemon(eosio::name acc, uint64_t c_index);
