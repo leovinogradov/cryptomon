@@ -43,12 +43,19 @@ class Menu_W_Sub(Menu):
     def dec(self,amt):
         if(amt <= self.amount):
             self.amount -= amt
-            self.opWheel.options[1].text = '{:.4f}'.format(self.amount)
+            text = '{:.4f}'.format(self.amount)
+            self.opWheel.options[1].text = text
     def inc(self,amt):
+        total = self.amount + amt
+        self.amount = total
+        text = '{:.4f}'.format(self.amount)
+        self.opWheel.options[1].text = text
+    def inc_cap(self,amt):
         total = self.amount + amt
         if( self.pyview.funds >= total):
             self.amount = total
-            self.opWheel.options[1].text = '{:.4f}'.format(self.amount)
+            text = '{:.4f}'.format(self.amount)
+            self.opWheel.options[1].text = text
 
 
 class Submenu:
@@ -160,7 +167,7 @@ class Select_Submenu_1_1_1_1(Submenu):
     def left_button(self):
         my_index    = self.menu.pyview.my_index
         primary_mon = self.menu.pyview.primary_mon
-        print(listmon(my_index,'{:.4f}'.format(self.menu.amount) + " TNT",1000,primary_mon.index))
+        print(listmon(my_index,'{:.4f}'.format(self.menu.amount) + " TNT",primary_mon.index))
         self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_all_submenus()
@@ -411,7 +418,7 @@ class Trade_Friend_Submenu_1_2(Submenu):
     def down_button(self):
         self.menu.activate_submenu(Trade_Friend_Submenu_1_2_1(self.menu))
     def right_button(self):
-        self.menu.inc(.01)
+        self.menu.inc_cap(.01)
 class Trade_Friend_Submenu_1_2_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
@@ -438,7 +445,7 @@ class Trade_Friend_Submenu_1_3(Submenu):
     def down_button(self):
         self.menu.activate_submenu(Trade_Friend_Submenu_1_3_1(self.menu))
     def right_button(self):
-        self.menu.inc(.01)
+        self.menu.inc_cap(.01)
 class Trade_Friend_Submenu_1_3_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)

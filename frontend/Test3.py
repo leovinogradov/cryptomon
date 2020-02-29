@@ -43,6 +43,7 @@ class PygameView(object):
         self.path = os.path.join(dir_path+rel_path)
 
         self.my_index = "zvnxqtokmcqs"
+        #self.first_startup()
         self.my_info_update()
         self.myFriends = ["ingkdmmngzgi"]#TODO add friends list
 
@@ -88,12 +89,21 @@ class PygameView(object):
         self.menu.down_button()
     def left_button(self,callback_type):
         self.menu.left_button()
+
+    def first_startup(self):
+        createmon(self.my_index)
+        createmon(self.my_index)
+        createmon(self.my_index)
         
     def my_info_update(self):
         info = getallinfo(self.my_index)
         self.my_name = info['playerName']
-        funds, tnt = info['funds'].split()
-        self.funds = float(funds)
+
+        #funds, tnt = info['funds'].split()
+        #self.funds = float(funds)
+
+        self.funds = float(info['funds'])
+
         self.my_mons = []
         cryptomons = info['cryptomons']
         for i in cryptomons:
