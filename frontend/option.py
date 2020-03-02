@@ -1,13 +1,14 @@
 import pygame
 from Action import *
 class Option(object):
-    def __init__(self, image, text, action=None):
+    def __init__(self, image, text, action=None, centered=False):
         self.image = image
         self.size = self.image.get_size()
         self.bigger_img = pygame.transform.scale(self.image, (int(self.size[0]*2), int(self.size[1]*2)))
 
         self.opX, self.opY = self.image.get_rect().size
         self.opBX, self.opBY = self.bigger_img.get_rect().size
+        self.centered = centered
 
         self.text = text
         if(isinstance(action,Action)):
@@ -29,7 +30,7 @@ class Option(object):
                 self.opBXbody, self.opBYbody = self.bigger_img_body.get_rect().size
 
     def draw(self, pyview, xOff, yOff):
-        if (xOff == 0) & (yOff == 0):
+        if (xOff == 0) and (yOff == 0):
             self.draw_scaled_body(pyview,xOff,yOff)
             self.draw_scaled_image(pyview, xOff, yOff)
             self.draw_scaled_caption(pyview, xOff, yOff)
@@ -59,7 +60,9 @@ class Option(object):
     def draw_unscaled_caption(self, pyview, xOff, yOff):
         fw, fh = pyview.font.size(self.text)
         surface = pyview.font.render(self.text, True, (0, 255, 0))
-        pyview.screen.blit(surface, ((pyview.width - fw - xOff) // 2, (pyview.height - fh - self.opY - yOff) // 2))
+        offset = 0 if self.centered else self.opY
+        pyview.screen.blit(surface, ((pyview.width - fw - xOff) // 2, (pyview.height - fh - offset - yOff) // 2))
+        # pyview.screen.blit(surface, ((pyview.width - fw - xOff) // 2, (pyview.height - fh - yOff) // 2)) # no opY makes it centered
 
 class OptionWheel(object):
     def __init__(self, pyview):
@@ -71,14 +74,14 @@ class OptionWheel(object):
         self.options = []
         self.peeking = False
 
-    def append_option(self,image_name,text,action=None):
+    def append_option(self,image_name,text,action=None,centered=False):
         if(isinstance(image_name,str)):
-            self.options.append(Option(pygame.image.load(image_name),text,action))
+            self.options.append(Option(pygame.image.load(image_name),text,action,centered))
         else:
-            self.append_option_existing(image_name,text,action)
+            self.append_option_existing(image_name,text,action,centered)
 
-    def append_option_existing(self,image,text,action=None):
-        self.options.append(Option(image,text,action))
+    def append_option_existing(self,image,text,action=None,centered=False):
+        self.options.append(Option(image,text,action,centered))
 
     def select(self):
         self.selected = True

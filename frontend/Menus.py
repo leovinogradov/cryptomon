@@ -119,7 +119,8 @@ class Select_Submenu_1(Submenu):
         primary_mon = self.menu.pyview.primary_mon
         self.opWheel.append_option(primary_mon.head_image,"Dispose Menu",primary_mon)
         self.opWheel.append_option(primary_mon.head_image,"Interact Menu",primary_mon)
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        # self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
     def left_button(self):
         self.menu.activate_submenu(Select_Submenu_1_1(self.menu))
     def down_button(self):

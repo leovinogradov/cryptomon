@@ -38,7 +38,7 @@ class PygameView(object):
         self.playtime = 0.0
         self.font = pygame.font.SysFont('mono', 15, bold=True)
 
-        dir_path = os.path.dirname(__file__)
+        dir_path = os.path.dirname(__file__) or '.'
         rel_path = "/assets/"
         self.path = os.path.join(dir_path+rel_path)
 
@@ -94,7 +94,7 @@ class PygameView(object):
         createmon(self.my_index)
         createmon(self.my_index)
         createmon(self.my_index)
-        
+
     def my_info_update(self):
         info = getallinfo(self.my_index)
         self.my_name = info['playerName']

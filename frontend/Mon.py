@@ -62,4 +62,3 @@ class Mon:
             return "Lion"
         else:
             return "Bear"
-
