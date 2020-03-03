@@ -3,3 +3,4 @@ nodeos.log
 backend/nodeos.log
 frontend/nodeos.log
 frontend/node_modules
+frontend/__pycache__
