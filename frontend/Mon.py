@@ -13,6 +13,7 @@ class Mon:
             self.hunger = mon['hunger']
             self.date_aquired = ['start']
             self.date_last_interacted = ['current']
+            self.listed = False
         else:
             self.name = name
             self.head_nature = head_nature
@@ -24,12 +25,14 @@ class Mon:
             self.hunger = None
             self.date_aquired = None
             self.date_last_interacted = None
+            self.listed = False
         self.head_image_name = pyview.path + self.head + "Head" + self.head_nature + ".png"
         self.body_image_name = pyview.path + self.body + "Body" + self.body_nature + ".png"
+        self.grey_head_image_name = pyview.path + self.head + "HeadGrey.png"
+        self.grey_body_image_name = pyview.path + self.body + "BodyGrey.png"
         self.head_image = pygame.image.load(self.head_image_name)
         self.body_image = pygame.image.load(self.body_image_name)
         self.x_size, self.y_size = self.head_image.get_rect().size
-
     def decode_nature(self,code):
         #0bZZ XX
         h_code = code//4
@@ -62,3 +65,11 @@ class Mon:
             return "Lion"
         else:
             return "Bear"
+    def delist(self):
+        self.listed = False
+        self.head_image = pygame.image.load(self.head_image_name)
+        self.body_image = pygame.image.load(self.body_image_name)
+    def enlist(self):
+        self.listed = True
+        self.head_image = pygame.image.load(self.grey_head_image_name)
+        self.body_image = pygame.image.load(self.grey_body_image_name)

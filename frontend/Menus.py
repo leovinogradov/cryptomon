@@ -103,10 +103,10 @@ class Select_Mon_Menu(Menu_W_Sub):
             selected_op = self.opWheel.get_selected_op()
             if(selected_op.mon!=None):
                 self.pyview.primary_mon = selected_op.mon
-                if(True):#TODO: Check if mon is grey and choose submenu based on answer
-                    self.activate_submenu(Select_Submenu_1(self))
+                if(self.pyview.primary_mon.listed):#Check if mon is listed
+                    self.activate_submenu(Select_Submenu_2(self))#listed
                 else:
-                    self.activate_submenu(Select_Submenu_2(self))
+                    self.activate_submenu(Select_Submenu_1(self))#unlisted
     def deactivate_all_submenus(self):
         while len(self.submenu)!=0:
             self.opWheel = self.inactive_wheel.pop()
@@ -159,7 +159,7 @@ class Select_Submenu_1_1_1(Submenu):#Sell Mon
         self.menu.inc(.01)
 
 
-class Select_Submenu_1_1_1_1(Submenu):
+class Select_Submenu_1_1_1_1(Submenu):#list mon
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","List Mon")
@@ -168,7 +168,10 @@ class Select_Submenu_1_1_1_1(Submenu):
     def left_button(self):
         my_index    = self.menu.pyview.my_index
         primary_mon = self.menu.pyview.primary_mon
-        print(listmon(my_index,'{:.4f}'.format(self.menu.amount) + " TNT",primary_mon.index))
+        err = listmon(my_index,'{:.4f}'.format(self.menu.amount) + " TNT",primary_mon.index)
+        if(err == ''):
+            primary_mon.enlist()
+            self.menu.pyview.primary_mon = None
         self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_all_submenus()
@@ -183,20 +186,31 @@ class Select_Submenu_1_1_2(Submenu):#Release Mon
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
-        pass#Delete Mon
+        my_index    = self.menu.pyview.my_index
+        primary_mon = self.menu.pyview.primary_mon
+        err = deletemon(self.menu.pyview.my_index,primary_mon.index)
+        if(err == ''):
+            self.menu.pyview.my_mons.remove(primary_mon)
+            self.menu.pyview.primary_mon = None
+        self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_all_submenus()
     def right_button(self):
         pass
 
-class Select_Submenu_2(Submenu):
+class Select_Submenu_2(Submenu):#delist mon
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel Trade/Sale")
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
-        print(delistmon(my_index,primary_mon.index))
+        my_index    = self.menu.pyview.my_index
+        primary_mon = self.menu.pyview.primary_mon
+        err = canceltrade(my_index,primary_mon.index)
+        if(err == ''):
+            primary_mon.delist()
+        self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_submenu()
     def right_button(self):
@@ -218,7 +232,7 @@ class Food_Menu(Menu_W_Sub):
 class Food_Submenu(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
-        #TODO:Replace Default images with Food/Arrow Images
+        #TODO:Replace Default images with Food Images
         self.opWheel.append_option(self.menu.pyview.path+"Down.png","Less")
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm")
         self.opWheel.append_option(self.menu.pyview.path+"Up.png","More")
