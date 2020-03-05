@@ -43,14 +43,14 @@ class PygameView(object):
         self.path = os.path.join(dir_path+rel_path)
 
 
-        #self.my_index = "zvnxqtokmcqs"
-        self.my_index = "ingkdmmngzgi"
+        self.my_index = "zvnxqtokmcqs"
+        #self.my_index = "ingkdmmngzgi"
         #self.first_startup()
         #transfer(self.my_index, '5.0000 TNT')
         self.my_info_update()
         self.myFriends = []
-        #self.myFriends.append({'player_index':"ingkdmmngzgi", 'player_name':'Cameron'})#TODO add friends list
-        self.myFriends.append({'player_index':"zvnxqtokmcqs", 'player_name':'Cameron'})#TODO add friends list
+        self.myFriends.append({'player_index':"ingkdmmngzgi", 'player_name':'Cameron'})#TODO add friends list
+        #self.myFriends.append({'player_index':"zvnxqtokmcqs", 'player_name':'Cameron'})#TODO add friends list
 
         self.primary_mon = None
         self.primary_food = None

@@ -302,7 +302,7 @@ class Market_Menu(Menu_W_Sub):
         self.selected_mon = None
         for i in listings:
             if i['account_one'] != pyview.my_index:#dont show my listings
-                mon = Mon(pyview,getcryptomon(i['cryptomon_index']))
+                mon = Mon(pyview,getcryptomon(i['cryptomon_index2']))
                 mon.name = i['price']
                 self.mons_listed.append(mon)
                 self.opWheel.append_option(mon.head_image,mon.name,mon)
@@ -372,7 +372,9 @@ class Trade_Menu(Menu_W_Sub):
         #Set Background Image
         pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Main Menu",Action.GO_TO_MAIN_MENU)
-        if(True):#TODO:check if trade is incoming
+
+        trades = getofferedtrades(self.my_index)
+        if(not trades['trades']):#TODO:check if any trade is incoming
             self.opWheel.selected = True
             self.activate_submenu(Trade_Submenu(self))
     def down_button(self):

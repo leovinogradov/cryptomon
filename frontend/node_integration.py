@@ -255,11 +255,14 @@ def test():
         return -1;
 
 if __name__ == "__main__":
-    print(getallinfo("ingkdmmngzgi"))
+    print(getallinfo("zvnxqtokmcqs"))
     print()
     print(getlistings())
     print()
-    print(purchasemon("ingkdmmngzgi", 0))
+    '''
+    print(purchasemon("zvnxqtokmcqs",10))
+    '''
+    #print(getofferredtrades("zvnxqtokmcqs"))
     #print('TEST:')
     # print(test())
     #res = getallinfo("zvnxqtokmcqs")
