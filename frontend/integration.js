@@ -167,7 +167,7 @@ require('yargs')
        }],
        data: {
          acc: argv.account,
-         cryptomon_index: argv.index
+         c_index: argv.index
        },
      }]
     }, {
