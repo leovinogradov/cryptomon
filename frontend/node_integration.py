@@ -259,7 +259,7 @@ if __name__ == "__main__":
     print()
     print(getlistings())
     print()
-    print(purchasemon("ingkdmmngzgi",0))
+    print(purchasemon("ingkdmmngzgi", 0))
     #print('TEST:')
     # print(test())
     #res = getallinfo("zvnxqtokmcqs")
