@@ -42,10 +42,15 @@ class PygameView(object):
         rel_path = "/assets/"
         self.path = os.path.join(dir_path+rel_path)
 
-        self.my_index = "zvnxqtokmcqs"
+
+        #self.my_index = "zvnxqtokmcqs"
+        self.my_index = "ingkdmmngzgi"
         #self.first_startup()
+        #transfer(self.my_index, '5.0000 TNT')
         self.my_info_update()
-        self.myFriends = ["ingkdmmngzgi"]#TODO add friends list
+        self.myFriends = []
+        #self.myFriends.append({'player_index':"ingkdmmngzgi", 'player_name':'Cameron'})#TODO add friends list
+        self.myFriends.append({'player_index':"zvnxqtokmcqs", 'player_name':'Cameron'})#TODO add friends list
 
         self.primary_mon = None
         self.primary_food = None
@@ -91,23 +96,26 @@ class PygameView(object):
         self.menu.left_button()
 
     def first_startup(self):
+        upsertplayer(self.my_index, 'Cameron')
         createmon(self.my_index)
         createmon(self.my_index)
         createmon(self.my_index)
 
     def my_info_update(self):
+        #print(self.my_index)
         info = getallinfo(self.my_index)
+        #print(info)
         self.my_name = info['playerName']
 
-        #funds, tnt = info['funds'].split()
-        #self.funds = float(funds)
+        funds, tnt = info['funds'].split()
+        self.funds = float(funds)
 
-        self.funds = float(info['funds'])
+        #self.funds = float(info['funds'])
 
         self.my_mons = []
         cryptomons = info['cryptomons']
         for i in cryptomons:
-            print(i['key'])
+            #print(i['key'])
             self.my_mons.append(Mon(self,i))
         self.myFood = info['inventory']
         

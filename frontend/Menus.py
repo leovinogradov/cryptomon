@@ -1,6 +1,7 @@
 import pygame
 from option import *
 from Action import *
+from Mon import *
 from node_integration import *
 
 class Menu:
@@ -163,7 +164,7 @@ class Select_Submenu_1_1_1_1(Submenu):#list mon
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","List Mon")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
         my_index    = self.menu.pyview.my_index
@@ -183,7 +184,7 @@ class Select_Submenu_1_1_2(Submenu):#Release Mon
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm Release")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
         my_index    = self.menu.pyview.my_index
@@ -202,7 +203,7 @@ class Select_Submenu_2(Submenu):#delist mon
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel Trade/Sale")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
         my_index    = self.menu.pyview.my_index
@@ -278,7 +279,7 @@ class Interact_Submenu(Submenu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Change Food")
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Use this food")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel Feed")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel Feed", centered=True)
     def left_button(self):
         self.menu.pyview.change_menu(Action.GO_TO_FOOD_MENU)
     def down_button(self):
@@ -294,6 +295,18 @@ class Market_Menu(Menu_W_Sub):
         pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Manage Cryptomon",Action.GO_TO_SELECT_MON_MENU)
+
+        listings = getlistings()
+        print(listings)
+        self.mons_listed = []
+        self.selected_mon = None
+        for i in listings:
+            if i['account_one'] != pyview.my_index:#dont show my listings
+                mon = Mon(pyview,getcryptomon(i['cryptomon_index']))
+                mon.name = i['price']
+                self.mons_listed.append(mon)
+                self.opWheel.append_option(mon.head_image,mon.name,mon)
+
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Refresh Shop Page")
     def down_button(self):
         super().down_button()
@@ -303,20 +316,24 @@ class Market_Menu(Menu_W_Sub):
             selection = self.opWheel.selection
             if(selection == len(self.opWheel.options)-1):
                 #Refresh Page
-                self.opWheel.deselect()
+                self.menu.pyview.change_menu(Action.GO_TO_MARKET_MENU)
+            elif(selection != 0):
+                self.selected_mon = self.mons_listed[selection - 1]
+                self.activate_submenu(Market_Submenu(self))
 
 
 class Market_Submenu(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
         #TODO: EXCHANGE MON PIC WITH SELECTED MON FROM SHOP
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadNormal.png","Buy Cryptomon")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadNormal.png","Cancel")
+        self.opWheel.append_option(menu.selected_mon.head_image,"Buy Cryptomon", menu.selected_mon)
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
     def left_button(self):
         #Buy Mon
         my_index    = self.menu.pyview.my_index
-        primary_mon = self.menu.pyview.primary_mon
-        purchasemon(my_index,primary_mon.index)
+        selected_mon = self.menu.selected_mon
+        print(selected_mon.index)
+        purchasemon(my_index,selected_mon.index)
         self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_submenu()
@@ -340,7 +357,7 @@ class Friend_Submenu(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadNormal.png","Delete Friend")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadNormal.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
     def left_button(self):
         pass#TODO: Delete Selected Friend From Friends list
     def down_button(self):
@@ -368,7 +385,7 @@ class Trade_Submenu(Submenu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Decline Trade")
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Accept Trade")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
     def left_button(self):
         pass#TODO: end trade/sale
     def down_button(self):
@@ -412,7 +429,7 @@ class Trade_Friend_Submenu_1_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
         #TODO:Init Trade
@@ -438,7 +455,7 @@ class Trade_Friend_Submenu_1_2_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
         #TODO:Init Buy
@@ -465,7 +482,7 @@ class Trade_Friend_Submenu_1_3_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
         #Init Trade/Buy
