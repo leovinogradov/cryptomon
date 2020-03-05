@@ -118,7 +118,8 @@ class Select_Submenu_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
         primary_mon = self.menu.pyview.primary_mon
-        self.opWheel.append_option(primary_mon.head_image,"Dispose Menu",primary_mon)
+        # self.opWheel.append_option(primary_mon.head_image,"Dispose Menu",primary_mon)
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Market", centered=True)
         self.opWheel.append_option(primary_mon.head_image,"Interact Menu",primary_mon)
         # self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
@@ -132,10 +133,12 @@ class Select_Submenu_1(Submenu):
 class Select_Submenu_1_1(Submenu):#dispose menu
     def __init__(self, menu):
         super().__init__(menu)
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Trade")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Sell")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Release")
-        self.opWheel.peeking = True#enables selected mon to peek
+        # self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Trade")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Trade", centered=True)
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Sell", centered=True)
+        # self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Release")
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Release", centered=True)
+        self.opWheel.peeking = True # enables selected mon to peek
     def left_button(self):
         self.menu.pyview.change_menu(Action.GO_TO_TRADE_MENU)
     def down_button(self):
