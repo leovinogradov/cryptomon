@@ -259,10 +259,10 @@ if __name__ == "__main__":
     print()
     print(getlistings())
     print()
-    '''
-    print(purchasemon("zvnxqtokmcqs",10))
-    '''
-    #print(getofferredtrades("zvnxqtokmcqs"))
+    #print(purchasemon("zvnxqtokmcqs",9))
+    print(getofferredtrades("zvnxqtokmcqs"))
+    #print()
+    #print(accepttrade("zvnxqtokmcqs",9))9 is my mon
     #print('TEST:')
     # print(test())
     #res = getallinfo("zvnxqtokmcqs")

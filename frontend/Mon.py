@@ -37,7 +37,7 @@ class Mon:
         #0bZZ XX
         h_code = code//4
         #0bXX ZZ
-        b_code = (code % 4)//4
+        b_code = code % 4
         #0bZZ
         if(h_code == 3):
             head = "Poison"
