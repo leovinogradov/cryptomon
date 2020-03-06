@@ -10,7 +10,7 @@ from node_integration import *
 class PygameView(object):
 
 
-    def __init__(self, width=640, height=320, fps=30):
+    def __init__(self, width=480, height=320, fps=30):
         """Initialize GPIO pins
         """
         """#Comment this block back in if Physical Buttons are attatched
@@ -32,7 +32,8 @@ class PygameView(object):
         self.width = width
         self.height = height
         #self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
-        self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        #self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((self.width, self.height))
 
         self.background = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.clock = pygame.time.Clock()
