@@ -536,7 +536,7 @@ using eosio::contract;
       auto player_entry = player_table.get(acc.value);
       eosblox::Random gen;
       gen.accumSeed(now());
-      int item = gen.next()%16;
+      int item = gen.next()%7;
       eosio::check(player_itr != player_table.end(), "Player does not exist");
       if(player_entry.inventory.size() >= 30){
         eosio::print("cannot acquire item since maximum capacity of inventory has been reached");
