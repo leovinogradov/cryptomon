@@ -1,4 +1,5 @@
 #include <cryptomon.hpp>
+#include "Random.h"
 
 using eosio::contract;
 
@@ -33,6 +34,9 @@ using eosio::contract;
     [[eosio::action]]
     void cryptomon::createmon(eosio::name acc){
       //require_auth(acc);
+      eosblox::Random gen;
+      gen.accumSeed(now());
+      int type = gen.next()%16;
       auto iterator = player_table.find(acc.value);
 
       if(iterator != player_table.end()){
@@ -47,7 +51,7 @@ using eosio::contract;
             row.hunger = 15;
             row.head = 1;
             row.torso = 1;
-            row.type = 1;
+            row.type = type;
             row.start = eosio::current_time_point();
             row.current = eosio::current_time_point();
             row.mon_name = "SET NAME";
@@ -65,7 +69,7 @@ using eosio::contract;
           /*condition must be changed when player has ability to own numerous
           cryptomons; need players to have upper limit personal amount of cryptomons
           */
-          eosio::print("Player already has a cryptomon");
+          eosio::print("Player already has reached upper-limit of cryptomon inventory amount");
         }
       }
     }
@@ -218,6 +222,11 @@ using eosio::contract;
           return;
         }
 
+        if(buyer.cryptomon_indexes.size() >= 5){
+          eosio::print("Cannot purchase cryptomon due to having maximum allowed amount of cryptomon (5)");
+          return;
+        }
+
         eosio::check(transact_entry.account_two.value == 0, "This is a trade, not a listing");
         eosio::check(acc != seller, "Cannot perform action with self!");
         eosio::check(transact_iterator != transact_table.end(), "No record exists in transact table!");
@@ -299,39 +308,45 @@ using eosio::contract;
                   }
                 }
                 else{
+                  if(entry_account_one.cryptomon_indexes.size() >= 5){
+                    eosio::print("Cannot offer tokens for cryptomon since the maximum amount of cryptomon has already been reached (5)");
+                    return;
+                  }
                   entry.cryptomon_index = 0;
                 }
                 entry.price = price;
               });
             }
           else{
-            transact_table.modify(trade_itr, account_one, [&](auto &row){
-              if(findItem<uint64_t>(c2, entry_account_two.cryptomon_indexes) > -1){
-                row.account_two = account_two;
-                row.price = price;
-                row.cryptomon_index2 = c2;
-              }
-              else{
-                eosio::print("Cannot initiate trade with player who does not have specified cryptomon!");
-                return;
-              }
-              if(swap){
-                if(entry_account_one.has_cryptomon && findItem<uint64_t>(c1, entry_account_one.cryptomon_indexes) > -1){
-                  row.swap = true;
-                  row.cryptomon_index = c1;
-                  //row.cryptomon_index = entry_account_one.cryptomon_index;
+            if(account_one == transact_table.get(c2).account_one){
+              transact_table.modify(trade_itr, account_one, [&](auto &row){
+                if(findItem<uint64_t>(c2, entry_account_two.cryptomon_indexes) > -1){
+                  row.account_two = account_two;
+                  row.price = price;
+                  row.cryptomon_index2 = c2;
                 }
                 else{
-                  eosio::print("Do not have that cryptomon to swap!");
+                  eosio::print("Cannot initiate trade with player who does not have specified cryptomon!");
                   return;
                 }
-              }
-              else{
-                row.cryptomon_index = 0;
-              }
-            });
-              }
+                if(swap){
+                  if(entry_account_one.has_cryptomon && findItem<uint64_t>(c1, entry_account_one.cryptomon_indexes) > -1){
+                    row.swap = true;
+                    row.cryptomon_index = c1;
+                    //row.cryptomon_index = entry_account_one.cryptomon_index;
+                  }
+                  else{
+                    eosio::print("Do not have that cryptomon to swap!");
+                    return;
+                  }
+                }
+                else{
+                  row.cryptomon_index = 0;
+                }
+              });
             }
+          }
+        }
           else{
             eosio::print("Lack adequate funds for offer amount!");
           }
@@ -439,7 +454,7 @@ using eosio::contract;
       eosio::time_point t2 = eosio::current_time_point();
       eosio::microseconds duration = t2 - t1; //getting difference in time
       eosio::print(duration.to_seconds());
-      if(duration > eosio::minutes(3)){ //arbitrary, can set time to any point to take away c stats
+      if(duration > eosio::minutes(300)){ //arbitrary, can set time to any point to take away c stats
         mons_table.modify(cryptomon_itr, acc, [&](auto &row){
           row.health -= 1;
           row.hunger -= 1;
@@ -518,12 +533,22 @@ using eosio::contract;
     [[eosio::action]]
     void cryptomon::itemacquire(eosio::name acc){
       auto player_itr = player_table.find(acc.value);
+      auto player_entry = player_table.get(acc.value);
+      eosblox::Random gen;
+      gen.accumSeed(now());
+      int item = gen.next()%16;
       eosio::check(player_itr != player_table.end(), "Player does not exist");
-      player_table.modify(player_itr, acc, [&](auto &row){
-          std::vector<uint8_t> &v = row.inventory;
-          uint8_t a = 1; //random item gen
-          v.push_back(a);
-      });
+      if(player_entry.inventory.size() >= 30){
+        eosio::print("cannot acquire item since maximum capacity of inventory has been reached");
+        return;
+      }
+      else{
+        player_table.modify(player_itr, acc, [&](auto &row){
+            std::vector<uint8_t> &v = row.inventory;
+            uint8_t a = item;
+            v.push_back(a);
+        });
+      }
     }
 
     [[eosio::action]]
@@ -549,28 +574,23 @@ using eosio::contract;
     }
 
     [[eosio::action]]
-    void cryptomon::itembuy(eosio::name account, uint8_t select, eosio::asset amount){
+    void cryptomon::itembuy(eosio::name account, uint8_t select){
       auto player_itr = player_table.find(account.value);
       auto player_entry = player_table.get(account.value);
       eosio::check(player_itr != player_table.end(), "Player does not exist");
-      eosio::check(amount <= player_entry.funds, "Do not have enough funds for the amount chosen!");
-      switch(select){
-        case 0:
-
-        break;
-        case 1:
-        break;
-        case 2:
-        break;
-        case 3:
-        break;
-        case 4:
-        break;
-        case 5:
-        break;
-        case 6:
-        break;
-      }
+      //eosio::check(amount <= player_entry.funds, "Do not have enough funds for the amount chosen!");
+      eosio::asset cost(5000, currency_symbol);
+      player_table.modify(player_itr, account, [&](auto &row){
+        if(row.inventory.size() < 30){
+          if(player_entry.funds >= cost){
+            row.inventory.push_back(select);
+            row.funds -= cost;
+          }
+          else{
+            eosio::print("Lacking adequate funds to purchase specified item!");
+          }
+        }
+      });
     }
 
     template <typename T>

@@ -87,7 +87,7 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
     void inittrade(eosio::name account_one, eosio::name account_two, eosio::asset price, bool swap, uint64_t c1, uint64_t c2);
 
     [[eosio::action]]
-    void itembuy(eosio::name account, uint8_t select, eosio::asset amount);
+    void itembuy(eosio::name account, uint8_t select);
 
     uint32_t now();
 
