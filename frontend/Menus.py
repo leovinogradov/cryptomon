@@ -376,10 +376,16 @@ class Trade_Menu(Menu_W_Sub):
         pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Main Menu",Action.GO_TO_MAIN_MENU)
 
-        trades = getofferedtrades(self.my_index)
-        if(not trades['trades']):#TODO:check if any trade is incoming
-            self.opWheel.selected = True
-            self.activate_submenu(Trade_Submenu(self))
+        self.trades = []
+        trade_dict = getofferredtrades(pyview.my_index)
+        if(len(trade_dict['trades']) != 0):#TODO:check if any trade is incoming
+            print("there is a trade")
+            for i in trade_dict['trades']:
+                if i['cryptomon_index2'] == pyview.primary_mon:
+                    self.trades.append(i)
+            if(len(self.trades) == 1):#if exactly one trade has been issued on said mon
+                self.opWheel.selected = True
+                self.activate_submenu(Trade_Submenu(self))
     def down_button(self):
         super().down_button()
         if len(self.submenu)!=0:
@@ -388,13 +394,18 @@ class Trade_Menu(Menu_W_Sub):
 class Trade_Submenu(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Decline Trade")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Accept Trade")
+        their_index = self.menu.trades[0]['cryptomon_index']
+        their_mon = Mon(self.menu.pyview,getcryptomon(their_index))
+        self.opWheel.append_option(their_mon.head_image,"Decline Trade",their_mon)
+        self.opWheel.append_option(their_mon.head_image,"Accept Trade",their_mon)
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
+        self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
-        pass#TODO: end trade/sale
+        canceltrade(self.menu.pyview.my_index, self.menu.pyview.primary_mon)
+        self.menu.pyview.change_menu(Action.GO_TO_TRADE_MENU)
     def down_button(self):
-        pass#TODO: accept trade/sale
+        accepttrade(self.menu.pyview.my_index,self.menu.pyview.primary_mon)
+        self.menu.pyview.change_menu(Action.GO_TO_TRADE_MENU)
     def right_button(self):
         self.menu.deactivate_submenu()
 
