@@ -10,7 +10,7 @@ from node_integration import *
 class PygameView(object):
 
 
-    def __init__(self, width=480, height=320, fps=30):
+    def __init__(self, width=640, height=320, fps=30):
         """Initialize GPIO pins
         """
         """#Comment this block back in if Physical Buttons are attatched
