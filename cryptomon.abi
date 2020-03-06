@@ -212,10 +212,6 @@
                 {
                     "name": "select",
                     "type": "uint8"
-                },
-                {
-                    "name": "amount",
-                    "type": "asset"
                 }
             ]
         },
