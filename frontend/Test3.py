@@ -119,13 +119,27 @@ class PygameView(object):
             self.my_mons.append(Mon(self,i))
         self.myFood = info['inventory']
         
+        """
         my_transacts = getyourtransacts(self.my_index)
         for i in my_transacts:
             index_listed = i['cryptomon_index2']
             for j in self.my_mons:
                 if(index_listed == j.index):
                     j.enlist()
-
+        """
+        
+        my_listings = getyourlistings(self.my_index)
+        my_trades = getyourtrades(self.my_index)
+        for i in my_listings["listings"]:
+            index_listed = i['cryptomon_index2']
+            for j in self.my_mons:
+                if(index_listed == j.index):
+                    j.enlist()
+        for i in my_trades["trades"]:
+            index_listed = i['cryptomon_index']
+            for j in self.my_mons:
+                if(index_listed == j.index):
+                    j.enlist()
 
     def change_menu(self, action):
         if action == Action.GO_TO_MAIN_MENU:

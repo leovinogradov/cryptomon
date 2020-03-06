@@ -350,11 +350,20 @@ class Friends_Menu(Menu_W_Sub):
         pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","New Friend")
+        for i in self.pyview.myFriends:
+            self.opWheel.append_option(pyview.path+"LionHeadNormal.png",i['player_name'])
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Main Menu",Action.GO_TO_MAIN_MENU)
     def down_button(self):
         super().down_button()
         if len(self.submenu)!=0:
             self.submenu[-1].down_button()
+        else:
+            selection = self.opWheel.selection
+            if(selection == 0):
+                pass
+            elif(selection != len(self.opWheel.options) - 1):
+                self.pyview.primary_friend = self.pyview.myFriends[selection - 1]
+                self.activate_submenu(Friend_Submenu(self))
 
 class Friend_Submenu(Submenu):
     def __init__(self, menu):
@@ -362,7 +371,8 @@ class Friend_Submenu(Submenu):
         self.opWheel.append_option(self.menu.pyview.path+"LionHeadNormal.png","Delete Friend")
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
     def left_button(self):
-        pass#TODO: Delete Selected Friend From Friends list
+        self.menu.pyview.myFriends.remove(self.menu.pyview.primary_friend)
+        self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_submenu()
     def right_button(self):

@@ -316,6 +316,23 @@ def test():
         return -1;
 
 if __name__ == "__main__":
-    # ---- For testing only ----
-    info = getallinfo('alice')
-    print(info)
+    #I am ingkdmmngzgi
+    my_index = "ingkdmmngzgi"
+    them_index = "zvnxqtokmcqs"
+    #print(inittrade("ingkdmmngzgi", "zvnxqtokmcqs", "0.0000 TNT", 1, 9, 5))
+    #listmon(my_index, "0.1300 TNT", 12)
+    print("I am " + my_index)
+    print("My info")
+    print(getallinfo(my_index))
+    print("My Listings")
+    print(getyourlistings(my_index))
+    print("My Trades")
+    print(getyourtrades(my_index))
+    print("Trades offered by them")
+    print(getofferredtrades(them_index))
+    print("Get up to ten listings")
+    print(getlistings())
+    print("Get all my transacts")
+    print(getyourtransacts(my_index))
+    print("Get all transacts")
+    print(gettransacts())
