@@ -179,6 +179,72 @@ require('yargs')
         });
         console.log(JSON.stringify(resp.rows));
   })
+  .command('getyourlistings', "Retrieve a Player's listing(s) in the market", {
+      account: {
+        describe: 'the account associated with player',
+        alias: 'a',
+        type: 'string',
+        demandOption: true,
+      }
+    },
+      async function (argv) {
+        const resp = await rpc.get_table_rows({
+          json: true,
+          code: 'mppvvumgroiw',
+          scope: 'mppvvumgroiw',
+          table: 'transacts',
+          key_type: 'i64',
+          index_position: 2,
+          lower_bound: argv.account,
+          upper_bound: argv.account,
+          reverse: false,
+          show_payer: false,
+        });
+        var i;
+        const resp_l = {};
+        resp_l.listings = new Array();
+
+        for(i = 0; i < resp.rows.length; i++){
+          if(resp.rows[i].account_two == "" && resp.rows[i].swap == 0){
+            resp.rows[i].listed_cryptomon = resp.rows[i].cryptomon_index2;
+            resp_l.listings.push(resp.rows[i]);
+          }
+        }
+        console.log(JSON.stringify(resp_l));
+  })
+  .command('getyourtrades', "Retrieve a Player's listing(s) in the market", {
+      account: {
+        describe: 'the account associated with player',
+        alias: 'a',
+        type: 'string',
+        demandOption: true,
+      }
+    },
+      async function (argv) {
+        const resp = await rpc.get_table_rows({
+          json: true,
+          code: 'mppvvumgroiw',
+          scope: 'mppvvumgroiw',
+          table: 'transacts',
+          key_type: 'i64',
+          index_position: 2,
+          lower_bound: argv.account,
+          upper_bound: argv.account,
+          reverse: false,
+          show_payer: false,
+        });
+        var i;
+        const resp_t = {};
+        resp_t.trades = new Array();
+
+        for(i = 0; i < resp.rows.length; i++){
+          if(resp.rows[i].account_two != "" && resp.rows[i].account_one != ""){
+            resp.rows[i].tradedmon = resp.rows[i].cryptomon_index;
+            resp_t.trades.push(resp.rows[i]);
+          }
+        }
+        console.log(JSON.stringify(resp_t));
+  })
   .help()
   .alias('help', 'h')
   .argv;
