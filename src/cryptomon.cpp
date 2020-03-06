@@ -417,13 +417,16 @@ using eosio::contract;
       //require_auth(acc);
       auto iterator = player_table.find(acc.value);
       auto player_entry = player_table.get(acc.value);
+      auto cryptomons_iterator = mons_table.find(cryptomon_index);
       int location = findItem<uint64_t>(cryptomon_index, player_entry.cryptomon_indexes);
-
+      eosio::check(iterator != player_table.end(), "player does not exist");
+      eosio::check(location > -1, "cannot find cryptomon");
+      eosio::check(cryptomons_iterator != mons_table.end(), "cryptomon does not exist!");
+      eosio::check(player_entry.has_cryptomon, "cannot change name of cryptomon that you do not have");
       //auto c_index = player_table.get(acc.value).cryptomon_index;
 
       if(iterator != player_table.end()){
         if(player_entry.has_cryptomon && location > -1){
-          auto cryptomons_iterator = mons_table.find(cryptomon_index);
           mons_table.modify(cryptomons_iterator, acc, [&](auto &row){
              row.mon_name = s;
           });
@@ -431,9 +434,6 @@ using eosio::contract;
         else{
           eosio::print("Cannot change cryptomon which does not belong to you!");
         }
-      }
-      else{
-        eosio::print("Player does not exist!");
       }
     }
 
@@ -577,20 +577,24 @@ using eosio::contract;
     void cryptomon::itembuy(eosio::name account, uint8_t select){
       auto player_itr = player_table.find(account.value);
       auto player_entry = player_table.get(account.value);
-      eosio::check(player_itr != player_table.end(), "Player does not exist");
-      //eosio::check(amount <= player_entry.funds, "Do not have enough funds for the amount chosen!");
       eosio::asset cost(5000, currency_symbol);
-      player_table.modify(player_itr, account, [&](auto &row){
-        if(row.inventory.size() < 30){
-          if(player_entry.funds >= cost){
-            row.inventory.push_back(select);
-            row.funds -= cost;
-          }
-          else{
-            eosio::print("Lacking adequate funds to purchase specified item!");
+      eosio::check(player_itr != player_table.end(), "Player does not exist");
+      eosio::check(player_entry.inventory.size() < 30, "Cannot exceed maximum capacity for items (30)");
+      eosio::check(select/6 <= 1, "select of greater than 6 does not exist");
+      eosio::check(player_entry.funds >= cost, "Lack adequate funds for buying item");
+      //eosio::check(amount <= player_entry.funds, "Do not have enough funds for the amount chosen!");
+      if(player_itr != player_table.end()) {
+        if(player_entry.inventory.size() < 30){
+          if(select/6 <= 1){
+            if(player_entry.funds >= cost){
+              player_table.modify(player_itr, account, [&](auto &row){
+                    row.inventory.push_back(select);
+                    row.funds -= cost;
+              });
+            }
           }
         }
-      });
+      }
     }
 
     template <typename T>
