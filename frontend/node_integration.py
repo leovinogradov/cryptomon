@@ -166,7 +166,7 @@ def inittrade(account1: str, account2, price, swap, c1, c2):
         c.append("--price")
         c.append(price)
         c.append("--swap")
-        c.append(swap)
+        c.append(str(swap))
         c.append("--c1")
         c.append(str(c1))
         c.append("--c2")
@@ -219,6 +219,43 @@ def itemapply(account: str, item: int, index: int):
         print(e)
         return -1;
 
+# Delete item in inventory by specifying item type
+def itemdelete(account, item):
+    try:
+        c = ["node", "integration.js", "itemdelete"]
+        c.append("--account")
+        c.append(account)
+        c.append("--item")
+        c.append(str(item))
+        return subprocess.check_output(c).decode("utf-8")
+    except Exception as e:
+        print(e)
+        return -1;
+
+# Purchase item/food from the marketeplace with account
+def itembuy(account, select):
+    try:
+        c = ["node", "integration.js", "itembuy"]
+        c.append("--account")
+        c.append(account)
+        c.append("--select")
+        c.append(str(select))
+        return subprocess.check_output(c).decode("utf-8")
+    except Exception as e:
+        print(e)
+        return -1;
+
+# Acquire random item every 24 hours (WIP)
+def itemacquire(account):
+    try:
+        c = ["node", "integration.js", "itemacquire"]
+        c.append("--account")
+        c.append(account)
+        return subprocess.check_output(c).decode("utf-8")
+    except Exception as e:
+        print(e)
+        return -1;
+
 # create player for account
 # name = name of player
 def upsertplayer(account: str, name: str):
@@ -228,6 +265,28 @@ def upsertplayer(account: str, name: str):
         c.append(account)
         c.append("--s")
         c.append(name)
+        return subprocess.check_output(c).decode("utf-8")
+    except Exception as e:
+        print(e)
+        return -1;
+
+#get listings a Player has created
+def getyourlistings(account: str):
+    try:
+        c = ["node", "integration_readfcns.js", "getyourlistings"]
+        c.append("--account")
+        c.append(account)
+        return subprocess.check_output(c).decode("utf-8")
+    except Exception as e:
+        print(e)
+        return -1;
+
+#get trades a Player has initiated
+def getyourtrades(account: str):
+    try:
+        c = ["node", "integration_readfcns.js", "getyourtrades"]
+        c.append("--account")
+        c.append(account)
         return subprocess.check_output(c).decode("utf-8")
     except Exception as e:
         print(e)
@@ -255,17 +314,12 @@ def test():
         return -1;
 
 if __name__ == "__main__":
-    print(getallinfo("zvnxqtokmcqs"))
     print()
-    print(getlistings())
-    print()
-    '''
-    print(purchasemon("zvnxqtokmcqs",10))
-    '''
+    #print(getallinfo("zvnxqtokmcqs"))
+    #print(inittrade("ingkdmmngzgi", "zvnxqtokmcqs", "0.0000 TNT", 1, 5, 9))
     #print(getofferredtrades("zvnxqtokmcqs"))
     #print('TEST:')
     # print(test())
     #res = getallinfo("zvnxqtokmcqs")
     #res = canceltrade("zvnxqtokmcqs", 1)
     #print(type(res))
-    #print(res)
