@@ -550,10 +550,11 @@ using eosio::contract;
             v.push_back(a);
         });
       }
-      eosio::transaction t{};
+      /*eosio::transaction t{};
       t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "itemacquire"_n, std::make_tuple(acc));
       t.delay_sec = 86400;
       t.send(acc.value, acc);
+      */
     }
 
     [[eosio::action]]
