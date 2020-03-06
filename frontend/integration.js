@@ -35,7 +35,6 @@ require('yargs')
          blocksBehind: 3,
          expireSeconds: 30,
         });
-        console.log(resp);
   })
   .command('deletemon', 'Delete specified cryptomon of player', {
       account: {
