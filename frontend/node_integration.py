@@ -316,12 +316,6 @@ def test():
         return -1;
 
 if __name__ == "__main__":
-    print()
-    #print(getallinfo("zvnxqtokmcqs"))
-    #print(inittrade("ingkdmmngzgi", "zvnxqtokmcqs", "0.0000 TNT", 1, 5, 9))
-    #print(getofferredtrades("zvnxqtokmcqs"))
-    #print('TEST:')
-    # print(test())
-    #res = getallinfo("zvnxqtokmcqs")
-    #res = canceltrade("zvnxqtokmcqs", 1)
-    #print(type(res))
+    # ---- For testing only ----
+    info = getallinfo('alice')
+    print(info)
