@@ -151,8 +151,6 @@ class [[eosio::contract("cryptomon")]] cryptomon: public eosio::contract {
 
     struct [[eosio::table]] cryptomons{
       uint64_t key;
-      //mon monster;
-      //uint8_t level;
       uint8_t happiness;
       uint8_t health;
       uint8_t hunger;

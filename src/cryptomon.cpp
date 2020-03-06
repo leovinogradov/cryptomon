@@ -454,7 +454,7 @@ using eosio::contract;
       eosio::time_point t2 = eosio::current_time_point();
       eosio::microseconds duration = t2 - t1; //getting difference in time
       eosio::print(duration.to_seconds());
-      if(duration > eosio::minutes(300)){ //arbitrary, can set time to any point to take away c stats
+      if(duration > eosio::minutes(1440)){ //arbitrary, can set time to any point to take away c stats
         mons_table.modify(cryptomon_itr, acc, [&](auto &row){
           row.health -= 1;
           row.hunger -= 1;
@@ -538,6 +538,7 @@ using eosio::contract;
       gen.accumSeed(now());
       int item = gen.next()%7;
       eosio::check(player_itr != player_table.end(), "Player does not exist");
+      eosio::check(player_entry.inventory.size() < 30, "cannot acquire item since maximum capacity of inventory has been reached");
       if(player_entry.inventory.size() >= 30){
         eosio::print("cannot acquire item since maximum capacity of inventory has been reached");
         return;
