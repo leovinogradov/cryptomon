@@ -479,39 +479,39 @@ using eosio::contract;
           mons_table.modify(cryptomon_itr, acc, [&](auto &row){
             switch(item){
               case 0: //mush
-                row.health -= 1;
-                row.happiness += 1;
-                row.hunger += 6;
+                row.health = (row.health > 0)? row.health-1 : 0;
+                row.happiness = (row.happiness < 15)? row.happiness + 1 : 15;
+                row.hunger = (row.hunger + 6 <= 15)? row.hunger + 6: 15;
                 break;
               case 1: //seed
-                row.health += 4;
-                row.happiness += 1;
-                row.hunger += 1;
+                row.health = (row.health + 4 <= 15)? row.health + 4 : 15;
+                row.happiness = (row.happiness < 15)? row.happiness + 1 : 15;
+                row.hunger = (row.hunger < 15)? row.hunger + 1: 15;
                 break;
               case 2: //hay
-                row.health += 2;
-                row.happiness += 1;
-                row.hunger += 3;
+                row.health = (row.health + 2 <= 15)? row.health + 2 : 15;
+                row.happiness = (row.happiness < 15)? row.happiness + 1 : 15;
+                row.hunger = (row.hunger + 3 <= 15)? row.hunger + 3: 15;
                 break;
               case 3: //cake
-                row.health -= 2;
-                row.happiness += 5;
-                row.hunger += 3;
+                row.health = (row.health - 2 >= 0)? row.health - 2 : 0;
+                row.happiness = (row.happiness + 5 <= 15)? row.happiness + 5 : 15;
+                row.hunger = (row.hunger + 3 <= 15)? row.hunger + 3: 15;
                 break;
               case 4: //fudge
-                row.health -= 3;
-                row.happiness += 3;
-                row.hunger += 6;
+                row.health = (row.health - 3 >= 0)? row.health - 3 : 0;
+                row.happiness = (row.happiness + 3 <= 15)? row.happiness + 3 : 15;
+                row.hunger = (row.hunger + 6 <= 15)? row.hunger + 6: 15;
                 break;
               case 5: //medicine
-                row.health += 10;
-                row.happiness -= 4;
+                row.health = (row.health + 10 <= 15)? row.health + 10 : 0;
+                row.happiness = (row.happiness - 4 >= 0)? row.happiness - 4 : 0;
                 row.hunger += 0;
                 break;
               case 6: //catnip
-                row.health -= 3;
-                row.happiness += 10;
-                row.hunger -= 1;
+                row.health = (row.health - 3 >= 0)? row.health - 3 : 0;
+                row.happiness = (row.happiness + 10 <= 15)? row.happiness + 10 : 15;
+                row.hunger = (row.hunger > 0)? row.hunger - 1: 0;
                 break;
               default:
                 break;
@@ -550,6 +550,10 @@ using eosio::contract;
             v.push_back(a);
         });
       }
+      eosio::transaction t{};
+      t.actions.emplace_back(eosio::permission_level{get_self(), "active"_n}, get_self(), "itemacquire"_n, std::make_tuple(acc));
+      t.delay_sec = 86400;
+      t.send(acc.value, acc);
     }
 
     [[eosio::action]]
