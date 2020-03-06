@@ -31,7 +31,9 @@ class PygameView(object):
         pygame.display.set_caption("Press ESC to quit")
         self.width = width
         self.height = height
-        self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
+        #self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
         self.background = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.clock = pygame.time.Clock()
         self.fps = fps
@@ -118,7 +120,7 @@ class PygameView(object):
             #print(i['key'])
             self.my_mons.append(Mon(self,i))
         self.myFood = info['inventory']
-        
+
         my_transacts = getyourtransacts(self.my_index)
         for i in my_transacts:
             index_listed = i['cryptomon_index2']
