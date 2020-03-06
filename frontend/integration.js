@@ -597,7 +597,7 @@ require('yargs')
        }],
        data: {
          account: argv.account,
-         select: argv.index
+         select: argv.select,
        },
      }]
     }, {
