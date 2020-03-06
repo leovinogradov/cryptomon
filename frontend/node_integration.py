@@ -276,7 +276,7 @@ def getyourlistings(account: str):
         c = ["node", "integration_readfcns.js", "getyourlistings"]
         c.append("--account")
         c.append(account)
-        return subprocess.check_output(c).decode("utf-8")
+        return json.loads(subprocess.check_output(c).decode("utf-8"))
     except Exception as e:
         print(e)
         return -1;
@@ -287,7 +287,7 @@ def getyourtrades(account: str):
         c = ["node", "integration_readfcns.js", "getyourtrades"]
         c.append("--account")
         c.append(account)
-        return subprocess.check_output(c).decode("utf-8")
+        return json.loads(subprocess.check_output(c).decode("utf-8"))
     except Exception as e:
         print(e)
         return -1;
