@@ -6,6 +6,9 @@ from Menus import *
 from Action import *
 from Mon import *
 from node_integration import *
+from vkeyboard import VKeyboardRenderer
+from vkeyboard import VKeyboardLayout
+from vkeyboard import VKeyboard
 
 class PygameView(object):
 
@@ -60,6 +63,10 @@ class PygameView(object):
         self.menu = Main_Menu(self)
 
     def run(self):
+        window = pygame.display.set_mode((480, 320))
+        layout = kb.VKeyboardLayout()
+        keyboard = VKeyboard(window), consumer, layout #, consumer, layout
+        keyboard.enable()
         self.running = True
         while self.running:
             for event in pygame.event.get():
@@ -118,7 +125,7 @@ class PygameView(object):
             #print(i['key'])
             self.my_mons.append(Mon(self,i))
         self.myFood = info['inventory']
-        
+
         my_transacts = getyourtransacts(self.my_index)
         for i in my_transacts:
             index_listed = i['cryptomon_index2']
