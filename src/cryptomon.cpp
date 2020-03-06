@@ -455,7 +455,7 @@ using eosio::contract;
       eosio::microseconds duration = t2 - t1; //getting difference in time
       eosio::print(duration.to_seconds());
       if(duration > eosio::minutes(1440)){ //arbitrary, can set time to any point to take away c stats
-        int multiplier = duration/eosio::minutes(1440);
+        int multiplier = duration.to_seconds()/eosio::minutes(1440).to_seconds();
         mons_table.modify(cryptomon_itr, acc, [&](auto &row){
           row.health -= 1*multiplier;
           row.hunger -= 1*multiplier;
