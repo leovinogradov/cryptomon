@@ -294,6 +294,19 @@ def getyourtrades(account: str):
         print(e)
         return -1;
 
+def interact(account: str, index: int):
+    try:
+        c = ["node", "integration.js", "interact"]
+        c.append("--account")
+        c.append(account)
+        c.append("--index")
+        c.append(str(index))
+        out = subprocess.check_output(c).decode("utf-8")
+        return out
+    except Exception as e:
+        print(e)
+        return -1;
+
 # transfer funds from account to contract for use in-game
 def transfer(account: str, amount: str, memo = ""):
     try:
