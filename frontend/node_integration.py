@@ -321,6 +321,7 @@ if __name__ == "__main__":
     them_index = "zvnxqtokmcqs"
     #print(inittrade("ingkdmmngzgi", "zvnxqtokmcqs", "0.0000 TNT", 1, 9, 5))
     #listmon(my_index, "0.1300 TNT", 12)
+    setname(my_index, "suzy", 9)
     print("I am " + my_index)
     print("My info")
     print(getallinfo(my_index))

@@ -43,14 +43,14 @@ class PygameView(object):
         self.path = os.path.join(dir_path+rel_path)
 
 
-        self.my_index = "zvnxqtokmcqs"
-        #self.my_index = "ingkdmmngzgi"
+        #self.my_index = "zvnxqtokmcqs"
+        self.my_index = "ingkdmmngzgi"
         #self.first_startup()
         #transfer(self.my_index, '5.0000 TNT')
         self.my_info_update()
         self.myFriends = []
-        self.myFriends.append({'player_index':"ingkdmmngzgi", 'player_name':'Cameron'})#TODO add friends list
-        #self.myFriends.append({'player_index':"zvnxqtokmcqs", 'player_name':'Cameron'})#TODO add friends list
+        #self.myFriends.append({'player_index':"ingkdmmngzgi", 'player_name':'Cameron'})#TODO add friends list
+        self.myFriends.append({'player_index':"zvnxqtokmcqs", 'player_name':'Cameron'})#TODO add friends list
 
         self.primary_mon = None
         self.primary_food = None
@@ -118,16 +118,7 @@ class PygameView(object):
             #print(i['key'])
             self.my_mons.append(Mon(self,i))
         self.myFood = info['inventory']
-        
-        """
-        my_transacts = getyourtransacts(self.my_index)
-        for i in my_transacts:
-            index_listed = i['cryptomon_index2']
-            for j in self.my_mons:
-                if(index_listed == j.index):
-                    j.enlist()
-        """
-        
+                
         my_listings = getyourlistings(self.my_index)
         my_trades = getyourtrades(self.my_index)
         for i in my_listings["listings"]:

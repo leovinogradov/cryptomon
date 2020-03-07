@@ -92,7 +92,8 @@ class Select_Mon_Menu(Menu_W_Sub):
         self.opWheel.append_option(pyview.path+"LionHeadElectric.png","Buy Cryptomon",Action.GO_TO_MARKET_MENU)
         #List Cryptomon
         for i in self.pyview.my_mons:
-            self.opWheel.append_option(i.head_image,i.name,i)
+            #self.opWheel.append_option(i.head_image,i.name,i)
+            self.opWheel.append_option(i.head_image,str(i.index),i)
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Main Menu",Action.GO_TO_MAIN_MENU)
 
     def down_button(self):
@@ -389,13 +390,13 @@ class Trade_Menu(Menu_W_Sub):
         self.trades = []
         trade_dict = getofferredtrades(pyview.my_index)
         if(len(trade_dict['trades']) != 0):#TODO:check if any trade is incoming
-            print("there is a trade")
             for i in trade_dict['trades']:
-                if i['cryptomon_index2'] == pyview.primary_mon:
+                if i['cryptomon_index2'] == pyview.primary_mon.index:
                     self.trades.append(i)
             if(len(self.trades) == 1):#if exactly one trade has been issued on said mon
                 self.opWheel.selected = True
                 self.activate_submenu(Trade_Submenu(self))
+            
     def down_button(self):
         super().down_button()
         if len(self.submenu)!=0:
@@ -411,11 +412,11 @@ class Trade_Submenu(Submenu):
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
-        canceltrade(self.menu.pyview.my_index, self.menu.pyview.primary_mon)
-        self.menu.pyview.change_menu(Action.GO_TO_TRADE_MENU)
+        canceltrade(self.menu.pyview.my_index, self.menu.pyview.primary_mon.index)
+        self.menu.deactivate_submenu()
     def down_button(self):
-        accepttrade(self.menu.pyview.my_index,self.menu.pyview.primary_mon)
-        self.menu.pyview.change_menu(Action.GO_TO_TRADE_MENU)
+        accepttrade(self.menu.pyview.my_index,self.menu.pyview.primary_mon.index)
+        self.menu.deactivate_submenu()
     def right_button(self):
         self.menu.deactivate_submenu()
 
@@ -425,6 +426,7 @@ class Trade_Friend_Menu(Menu_W_Sub):
         #Set Background Image
         pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
+        self.opWheel.append_option(pyview.path+"LionHeadNormal.png","fred")
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Trade Menu",Action.GO_TO_TRADE_MENU)
         self.opWheel.peeking = True#enables selected mon to peek
     def down_button(self):
