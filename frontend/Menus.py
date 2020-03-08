@@ -289,14 +289,18 @@ class Interact_Menu(Menu_W_Sub):
 class Interact_Submenu(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Change Food")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Use this food")
-        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel Feed", centered=True)
+        primary_mon = self.menu.pyview.primary_mon;
+        # self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Change Food")
+        self.opWheel.append_option(self.menu.pyview.path+"empty.png", "Food remaining: 5", centered=True)
+        self.opWheel.append_option(primary_mon.head_image, "Feed this mon", primary_mon)
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png", "Cancel Feed", centered=True)
     def left_button(self):
-        self.menu.pyview.change_menu(Action.GO_TO_FOOD_MENU)
+        # self.menu.pyview.change_menu(Action.GO_TO_FOOD_MENU)
+        pass
     def down_button(self):
         #TODO: apply primary food to primary mon
-        self.menu.deactivate_submenu()
+        # self.menu.deactivate_submenu()
+        pass
     def right_button(self):
         self.menu.deactivate_submenu()
 

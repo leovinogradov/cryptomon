@@ -35,8 +35,8 @@ class PygameView(object):
         pygame.display.set_caption("Press ESC to quit")
         self.width = width
         self.height = height
-        # self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
-        self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
+        # self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
 
         self.background = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.clock = pygame.time.Clock()
