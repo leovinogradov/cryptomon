@@ -31,18 +31,20 @@ class PygameView(object):
         pygame.display.set_caption("Press ESC to quit")
         self.width = width
         self.height = height
-        #self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
-        self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
+        #self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
 
         self.background = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.clock = pygame.time.Clock()
         self.fps = fps
         self.playtime = 0.0
-        self.font = pygame.font.SysFont('mono', 15, bold=True)
+        self.font = pygame.font.SysFont('comicsanms', 25, bold=True)
 
         dir_path = os.path.dirname(__file__) or '.'
         rel_path = "/assets/"
         self.path = os.path.join(dir_path+rel_path)
+
+        self.background = pygame.image.load(self.path+"Stage.png")
 
 
         #self.my_index = "zvnxqtokmcqs"
@@ -170,9 +172,11 @@ class PygameView(object):
         surface = self.font.render(text, True, (0, 255, 0))
         # // makes integer division in python3
         self.screen.blit(surface, ((self.width - fw) // 2, (self.height - fh) // 2))
+
 ####
 
 if __name__ == '__main__':
 
     # call with width of window and fps
-    PygameView(480, 320).run()
+    #PygameView(480, 320).run()
+    PygameView(640, 480).run()

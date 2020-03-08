@@ -75,7 +75,7 @@ class Main_Menu(Menu):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.png")
         primary_mon = self.pyview.primary_mon
         if primary_mon != None:
             self.opWheel.append_option(primary_mon.head_image,primary_mon.name,Action.GO_TO_INTERACT_MENU)
@@ -87,7 +87,7 @@ class Select_Mon_Menu(Menu_W_Sub):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         self.opWheel.append_option(pyview.path+"LionHeadElectric.png","Buy Cryptomon",Action.GO_TO_MARKET_MENU)
         #List Cryptomon
@@ -225,7 +225,7 @@ class Food_Menu(Menu_W_Sub):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         #TODO:Display all food options
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Interact Menu",Action.GO_TO_INTERACT_MENU)
@@ -259,7 +259,7 @@ class Interact_Menu(Menu_W_Sub):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Play",Action.GO_TO_PLAY_MENU)
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Clean Pen")
@@ -296,7 +296,7 @@ class Market_Menu(Menu_W_Sub):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Manage Cryptomon",Action.GO_TO_SELECT_MON_MENU)
 
@@ -320,7 +320,7 @@ class Market_Menu(Menu_W_Sub):
             selection = self.opWheel.selection
             if(selection == len(self.opWheel.options)-1):
                 #Refresh Page
-                self.menu.pyview.change_menu(Action.GO_TO_MARKET_MENU)
+                self.pyview.change_menu(Action.GO_TO_MARKET_MENU)
             elif(selection != 0):
                 self.selected_mon = self.mons_listed[selection - 1]
                 self.activate_submenu(Market_Submenu(self))
@@ -348,7 +348,7 @@ class Friends_Menu(Menu_W_Sub):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","New Friend")
         for i in self.pyview.myFriends:
@@ -384,7 +384,7 @@ class Trade_Menu(Menu_W_Sub):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
 
         self.trades = []
         trade_dict = getofferredtrades(pyview.my_index)
@@ -432,7 +432,7 @@ class Trade_Friend_Menu(Menu_W_Sub):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         info = getallinfo(pyview.primary_friend['player_index'])
         self.friend_mons = []
@@ -440,7 +440,7 @@ class Trade_Friend_Menu(Menu_W_Sub):
         for i in info['cryptomons']:
             self.friend_mons.append(Mon(pyview,i))
         for i in self.friend_mons:
-            self.opWheel.append_option(i.head_image,i.name,i)
+            self.opWheel.append_option(i.head_image,str(i.index),i)
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Trade Menu",Action.GO_TO_TRADE_MENU)
         self.opWheel.peeking = True#enables selected mon to peek
     def down_button(self):
@@ -451,7 +451,7 @@ class Trade_Friend_Menu(Menu_W_Sub):
             selection = self.opWheel.selection
             if(selection != len(self.opWheel.options) - 1):#if not last option
                 self.selected_friend_mon = self.friend_mons[selection]
-                self.activate_submenu(Trade_Friend_Submenu_1(self.menu))
+                self.activate_submenu(Trade_Friend_Submenu_1(self))
 
     def deactivate_all_submenus(self):
         while len(self.submenu)!=0:
@@ -485,10 +485,10 @@ class Trade_Friend_Submenu_1_1(Submenu):#Trade
         my_index      = self.menu.pyview.my_index
         their_index   = self.menu.pyview.primary_friend['player_index']
         #amount        = '{:.4f}'.format(self.menu.amount) + " TNT"
-        amount        = 0
+        amount        = '{:.4f}'.format( 0 ) + " TNT"
         primary_mon   = self.menu.pyview.primary_mon
         secondary_mon = self.menu.selected_friend_mon
-        err = inittrade(my_index,their_index,amount,1,primary_mon,secondary_mon)
+        err = inittrade(my_index,their_index,amount,1,primary_mon.index,secondary_mon.index)
         if(err == ''):
             primary_mon.enlist()
             self.menu.pyview.primary_mon = None
@@ -524,7 +524,7 @@ class Trade_Friend_Submenu_1_2_1(Submenu):
         amount        = '{:.4f}'.format(self.menu.amount) + " TNT"
         primary_mon   = ""
         secondary_mon = self.menu.selected_friend_mon
-        err = inittrade(my_index,their_index,amount,1,primary_mon,secondary_mon)
+        err = inittrade(my_index,their_index,amount,1,primary_mon.index,secondary_mon.index)
         if(err == ''):
             primary_mon.enlist()
             self.menu.pyview.primary_mon = None
@@ -561,7 +561,7 @@ class Trade_Friend_Submenu_1_3_1(Submenu):
         amount        = '{:.4f}'.format(self.menu.amount) + " TNT"
         primary_mon   = self.menu.pyview.primary_mon
         secondary_mon = self.menu.selected_friend_mon
-        err = inittrade(my_index,their_index,amount,1,primary_mon,secondary_mon)
+        err = inittrade(my_index,their_index,amount,1,primary_mon.index,secondary_mon.index)
         if(err == ''):
             primary_mon.enlist()
             self.menu.pyview.primary_mon = None
@@ -576,6 +576,6 @@ class Play_Menu(Menu):
     def __init__(self, pyview):
         super().__init__(pyview)
         #Set Background Image
-        pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
+        #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Stop Playing",Action.GO_TO_INTERACT_MENU)

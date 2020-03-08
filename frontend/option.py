@@ -54,14 +54,14 @@ class Option(object):
 
     def draw_scaled_caption(self, pyview, xOff, yOff):
         fw, fh = pyview.font.size(self.text)
-        surface = pyview.font.render(self.text, True, (0, 255, 0))
-        offset = 0 if self.centered else self.opBY
+        surface = pyview.font.render(self.text, True, (45, 255, 45))
+        offset = 0 if self.centered else self.opBY*1.1
         pyview.screen.blit(surface, ((pyview.width - fw - xOff) // 2, (pyview.height - fh - offset - yOff) // 2))
 
     def draw_unscaled_caption(self, pyview, xOff, yOff):
         fw, fh = pyview.font.size(self.text)
-        surface = pyview.font.render(self.text, True, (0, 255, 0))
-        offset = 0 if self.centered else self.opY
+        surface = pyview.font.render(self.text, True, (45, 255, 45))
+        offset = 0 if self.centered else self.opY*1.1
         pyview.screen.blit(surface, ((pyview.width - fw - xOff) // 2, (pyview.height - fh - offset - yOff) // 2))
         # pyview.screen.blit(surface, ((pyview.width - fw - xOff) // 2, (pyview.height - fh - yOff) // 2)) # no opY makes it centered
 
