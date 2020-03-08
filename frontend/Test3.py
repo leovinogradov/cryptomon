@@ -57,7 +57,6 @@ class PygameView(object):
         self.primary_mon = None
         self.primary_food = None
         self.primary_friend = None
-        self.primary_friend_mon = None
 
         self.menu = Main_Menu(self)
 

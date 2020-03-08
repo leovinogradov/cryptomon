@@ -385,7 +385,6 @@ class Trade_Menu(Menu_W_Sub):
         super().__init__(pyview)
         #Set Background Image
         pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
-        self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Main Menu",Action.GO_TO_MAIN_MENU)
 
         self.trades = []
         trade_dict = getofferredtrades(pyview.my_index)
@@ -396,11 +395,20 @@ class Trade_Menu(Menu_W_Sub):
             if(len(self.trades) == 1):#if exactly one trade has been issued on said mon
                 self.opWheel.selected = True
                 self.activate_submenu(Trade_Submenu(self))
+        for i in pyview.myFriends:
+            self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Trade with " + i['player_name'])
+        self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Main Menu",Action.GO_TO_MAIN_MENU)
             
     def down_button(self):
         super().down_button()
         if len(self.submenu)!=0:
             self.submenu[-1].down_button()
+        else:
+            selection = self.opWheel.selection
+            if(selection != len(self.opWheel.options) - 1):#if not last option
+                self.pyview.primary_friend = self.pyview.myFriends[selection]
+                self.pyview.change_menu(Action.GO_TO_TRADE_FRIEND_MENU)
+
 
 class Trade_Submenu(Submenu):
     def __init__(self, menu):
@@ -426,13 +434,25 @@ class Trade_Friend_Menu(Menu_W_Sub):
         #Set Background Image
         pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
         #Set Wheel Contents
-        self.opWheel.append_option(pyview.path+"LionHeadNormal.png","fred")
+        info = getallinfo(pyview.primary_friend['player_index'])
+        self.friend_mons = []
+        self.selected_friend_mon = None
+        for i in info['cryptomons']:
+            self.friend_mons.append(Mon(pyview,i))
+        for i in self.friend_mons:
+            self.opWheel.append_option(i.head_image,i.name,i)
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Trade Menu",Action.GO_TO_TRADE_MENU)
         self.opWheel.peeking = True#enables selected mon to peek
     def down_button(self):
         super().down_button()
         if len(self.submenu)!=0:
             self.submenu[-1].down_button()
+        else:
+            selection = self.opWheel.selection
+            if(selection != len(self.opWheel.options) - 1):#if not last option
+                self.selected_friend_mon = self.friend_mons[selection]
+                self.activate_submenu(Trade_Friend_Submenu_1(self.menu))
+
     def deactivate_all_submenus(self):
         while len(self.submenu)!=0:
             self.opWheel = self.inactive_wheel.pop()
@@ -442,9 +462,10 @@ class Trade_Friend_Menu(Menu_W_Sub):
 class Trade_Friend_Submenu_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadNormal.png","Buy Mon")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadNormal.png","Trade Mon")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadNormal.png","Trade + Buy Mon")
+        mon = self.menu.selected_friend_mon
+        self.opWheel.append_option(mon.head_image,"Buy Mon", mon)
+        self.opWheel.append_option(mon.head_image,"Trade Mon", mon)
+        self.opWheel.append_option(mon.head_image,"Trade + Buy Mon", mon)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
         self.menu.activate_submenu(Trade_Friend_Submenu_1_2(self.menu))
@@ -453,24 +474,35 @@ class Trade_Friend_Submenu_1(Submenu):
     def right_button(self):
         self.menu.activate_submenu(Trade_Friend_Submenu_1_3(self.menu))
 
-class Trade_Friend_Submenu_1_1(Submenu):
+class Trade_Friend_Submenu_1_1(Submenu):#Trade
     def __init__(self, menu):
         super().__init__(menu)
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm")
+        mon = self.menu.selected_friend_mon
+        self.opWheel.append_option(mon.head_image,"Confirm", mon)
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
-        #TODO:Init Trade
+        my_index      = self.menu.pyview.my_index
+        their_index   = self.menu.pyview.primary_friend['player_index']
+        #amount        = '{:.4f}'.format(self.menu.amount) + " TNT"
+        amount        = 0
+        primary_mon   = self.menu.pyview.primary_mon
+        secondary_mon = self.menu.selected_friend_mon
+        err = inittrade(my_index,their_index,amount,1,primary_mon,secondary_mon)
+        if(err == ''):
+            primary_mon.enlist()
+            self.menu.pyview.primary_mon = None
         self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_all_submenus()
     def right_button(self):
         pass
-class Trade_Friend_Submenu_1_2(Submenu):
+class Trade_Friend_Submenu_1_2(Submenu):#Buy
     def __init__(self, menu):
         super().__init__(menu)
+        mon = self.menu.selected_friend_mon
         self.opWheel.append_option(self.menu.pyview.path+"Down.png","Less")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm Price")
+        self.opWheel.append_option(mon.head_image,"Confirm Price", mon)
         self.opWheel.append_option(self.menu.pyview.path+"Up.png","More")
         #TODO:Get amount default
     def left_button(self):
@@ -482,21 +514,31 @@ class Trade_Friend_Submenu_1_2(Submenu):
 class Trade_Friend_Submenu_1_2_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm")
+        mon = self.menu.selected_friend_mon
+        self.opWheel.append_option(mon.head_image,"Confirm", mon)
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
-        #TODO:Init Buy
+        my_index      = self.menu.pyview.my_index
+        their_index   = self.menu.pyview.primary_friend['player_index']
+        amount        = '{:.4f}'.format(self.menu.amount) + " TNT"
+        primary_mon   = ""
+        secondary_mon = self.menu.selected_friend_mon
+        err = inittrade(my_index,their_index,amount,1,primary_mon,secondary_mon)
+        if(err == ''):
+            primary_mon.enlist()
+            self.menu.pyview.primary_mon = None
         self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_all_submenus()
     def right_button(self):
         pass
-class Trade_Friend_Submenu_1_3(Submenu):
+class Trade_Friend_Submenu_1_3(Submenu):#Trade + Buy
     def __init__(self, menu):
         super().__init__(menu)
+        mon = self.menu.selected_friend_mon
         self.opWheel.append_option(self.menu.pyview.path+"Down.png","Less")
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm Price")
+        self.opWheel.append_option(mon.head_image,"Confirm Price", mon)
         self.opWheel.append_option(self.menu.pyview.path+"Up.png","More")
         self.opWheel.peeking = True#enables selected mon to peek
         #TODO:Get amount default
@@ -509,11 +551,20 @@ class Trade_Friend_Submenu_1_3(Submenu):
 class Trade_Friend_Submenu_1_3_1(Submenu):
     def __init__(self, menu):
         super().__init__(menu)
-        self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Confirm")
+        mon = self.menu.selected_friend_mon
+        self.opWheel.append_option(mon.head_image,"Confirm", mon)
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
         self.opWheel.peeking = True#enables selected mon to peek
     def left_button(self):
-        #Init Trade/Buy
+        my_index      = self.menu.pyview.my_index
+        their_index   = self.menu.pyview.primary_friend['player_index']
+        amount        = '{:.4f}'.format(self.menu.amount) + " TNT"
+        primary_mon   = self.menu.pyview.primary_mon
+        secondary_mon = self.menu.selected_friend_mon
+        err = inittrade(my_index,their_index,amount,1,primary_mon,secondary_mon)
+        if(err == ''):
+            primary_mon.enlist()
+            self.menu.pyview.primary_mon = None
         self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_all_submenus()
