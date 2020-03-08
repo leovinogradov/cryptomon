@@ -76,9 +76,9 @@ class Main_Menu(Menu):
         super().__init__(pyview)
         #Set Background Image
         #pyview.background = pygame.image.load(pyview.path+"Stage.png")
-        primary_mon = self.pyview.primary_mon
-        if primary_mon != None:
-            self.opWheel.append_option(primary_mon.head_image,primary_mon.name,Action.GO_TO_INTERACT_MENU)
+        # primary_mon = self.pyview.primary_mon
+        # if primary_mon != None:
+        #     self.opWheel.append_option(primary_mon.head_image,primary_mon.name,Action.GO_TO_INTERACT_MENU)
         self.opWheel.append_option(pyview.path+"LionHeadGrass.png","Manage Cryptomon",Action.GO_TO_SELECT_MON_MENU)
         self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Manage Friends",Action.GO_TO_FRIENDS_MENU)
         self.opWheel.append_option(pyview.path+"LionHeadPoison.png","Exit App",Action.EXIT_APP)
@@ -408,7 +408,7 @@ class Trade_Menu(Menu_W_Sub):
                 self.opWheel.selected = True
                 self.activate_submenu(Trade_Submenu(self))
 
-            
+
     def down_button(self):
         super().down_button()
         if len(self.submenu)!=0:
