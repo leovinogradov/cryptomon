@@ -332,7 +332,7 @@ if __name__ == "__main__":
     #I am ingkdmmngzgi
     my_index = "ingkdmmngzgi"
     them_index = "zvnxqtokmcqs"
-    #print(inittrade("ingkdmmngzgi", "zvnxqtokmcqs", "0.0000 TNT", 1, 9, 5))
+    print(inittrade("ingkdmmngzgi", "zvnxqtokmcqs", "0.0000 TNT", 1, 9, 5))
     #listmon(my_index, "0.1300 TNT", 12)
     #setname(my_index, "suzy", 9)
     print("I am " + my_index)

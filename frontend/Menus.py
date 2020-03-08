@@ -215,6 +215,14 @@ class Select_Submenu_2(Submenu):#delist mon
         err = canceltrade(my_index,primary_mon.index)
         if(err == ''):
             primary_mon.delist()
+        else:
+            my_trades = getyourtrades(my_index)
+            for i in my_trades["trades"]:
+                index_listed = i['cryptomon_index']
+                if index_listed == primary_mon.index:
+                    err = canceltrade(my_index,i['cryptomon_index2'])
+                    if(err == ''):
+                        primary_mon.delist()
         self.menu.pyview.change_menu(Action.GO_TO_MAIN_MENU)
     def down_button(self):
         self.menu.deactivate_submenu()
@@ -386,6 +394,10 @@ class Trade_Menu(Menu_W_Sub):
         #Set Background Image
         #pyview.background = pygame.image.load(pyview.path+"Stage.jpg")
 
+        for i in pyview.myFriends:
+            self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Trade with " + i['player_name'])
+        self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Main Menu",Action.GO_TO_MAIN_MENU)
+
         self.trades = []
         trade_dict = getofferredtrades(pyview.my_index)
         if(len(trade_dict['trades']) != 0):#TODO:check if any trade is incoming
@@ -395,9 +407,7 @@ class Trade_Menu(Menu_W_Sub):
             if(len(self.trades) == 1):#if exactly one trade has been issued on said mon
                 self.opWheel.selected = True
                 self.activate_submenu(Trade_Submenu(self))
-        for i in pyview.myFriends:
-            self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Trade with " + i['player_name'])
-        self.opWheel.append_option(pyview.path+"LionHeadNormal.png","Return to Main Menu",Action.GO_TO_MAIN_MENU)
+
             
     def down_button(self):
         super().down_button()

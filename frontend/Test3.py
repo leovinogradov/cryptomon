@@ -50,7 +50,6 @@ class PygameView(object):
         #self.my_index = "zvnxqtokmcqs"
         self.my_index = "ingkdmmngzgi"
         #self.first_startup()
-        #transfer(self.my_index, '5.0000 TNT')
         self.my_info_update()
         self.myFriends = []
         #self.myFriends.append({'player_index':"ingkdmmngzgi", 'player_name':'Cameron'})#TODO add friends list
@@ -100,6 +99,8 @@ class PygameView(object):
 
     def first_startup(self):
         upsertplayer(self.my_index, 'Cameron')
+        transfer(self.my_index, '10.0000 TNT')
+        createmon(self.my_index)
         createmon(self.my_index)
         createmon(self.my_index)
         createmon(self.my_index)
