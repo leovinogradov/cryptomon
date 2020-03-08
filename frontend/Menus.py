@@ -121,13 +121,36 @@ class Select_Submenu_1(Submenu):
         primary_mon = self.menu.pyview.primary_mon
         # self.opWheel.append_option(primary_mon.head_image,"Dispose Menu",primary_mon)
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Market", centered=True)
-        self.opWheel.append_option(primary_mon.head_image,"Interact Menu",primary_mon)
+        self.opWheel.append_option(primary_mon.head_image,"Interact",primary_mon)
         # self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Cancel")
         self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png","Cancel", centered=True)
     def left_button(self):
         self.menu.activate_submenu(Select_Submenu_1_1(self.menu))
     def down_button(self):
-        self.menu.pyview.change_menu(Action.GO_TO_INTERACT_MENU)
+        # self.menu.pyview.change_menu(Action.GO_TO_INTERACT_MENU)
+        self.menu.activate_submenu(Select_Submenu_1_Feed(self.menu))
+    def right_button(self):
+        self.menu.deactivate_submenu()
+
+class Select_Submenu_1_Feed(Submenu):
+    def __init__(self, menu):
+        super().__init__(menu)
+        primary_mon = self.menu.pyview.primary_mon
+        numFoods = len(self.menu.pyview.myFood)
+        # self.opWheel.append_option(self.menu.pyview.path+"LionHeadElectric.png","Change Food")
+        self.opWheel.append_option(self.menu.pyview.path+"empty.png", f"Food remaining: {numFoods}", centered=True)
+        self.opWheel.append_option(primary_mon.head_image, "Feed this mon", primary_mon)
+        self.opWheel.append_option(self.menu.pyview.path+"BtnBlank.png", "Cancel Feed", centered=True)
+    def left_button(self):
+        # self.menu.pyview.change_menu(Action.GO_TO_FOOD_MENU)
+        pass
+    def down_button(self):
+        #TODO: apply primary food to primary mon
+        if (len(self.menu.pyview.myFood) <= 0):
+            return
+        itemapply(self.menu.pyview.my_index, self.menu.pyview.myFood.pop(), self.menu.pyview.primary_mon.index)
+        numFoods = len(self.menu.pyview.myFood)
+        self.opWheel.options[0].text = f"Food remaining: {numFoods}";
     def right_button(self):
         self.menu.deactivate_submenu()
 
@@ -261,7 +284,6 @@ class Food_Submenu(Submenu):
         #Add to this counter for food
         self.amount -= 1
         self.opWheel.options[1].text = '{:d}'.format(self.amount)
-
 
 class Interact_Menu(Menu_W_Sub):
     def __init__(self, pyview):
