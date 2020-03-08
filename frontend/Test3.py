@@ -27,12 +27,16 @@ class PygameView(object):
         """Initialize pygame, window, background, font,...
         """
         pygame.init()
-        pygame.mouse.set_visible(False)
+        # pygame.mouse.set_visible(False)
+
+        # transparent 8x8 cursor with the hot-spot at (4,4)
+        pygame.mouse.set_cursor((8,8),(4,4),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
+
         pygame.display.set_caption("Press ESC to quit")
         self.width = width
         self.height = height
-        #self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
-        self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((self.width, self.height), pygame.DOUBLEBUF)
+        # self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
 
         self.background = pygame.Surface(self.screen.get_size()).convert_alpha()
         self.clock = pygame.time.Clock()
@@ -122,7 +126,7 @@ class PygameView(object):
             #print(i['key'])
             self.my_mons.append(Mon(self,i))
         self.myFood = info['inventory']
-                
+
         my_listings = getyourlistings(self.my_index)
         my_trades = getyourtrades(self.my_index)
         for i in my_listings["listings"]:
